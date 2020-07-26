@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+    web:
+        build: 
+          context: ./web
+        ports:
+          - "80:80"
+          - "443:443"
+        volumes:
+          - ./web/public:/etc/nginx/public
+          - ../ssl/certs/:/etc/pki/tls/certs/
+          - ../ssl/private/:/etc/pki/tls/private/
+          - ./gunicorn_socket:/tmp/gunicorn_socket
+        depends_on:
+          - app
+        container_name: matching_web
+        restart: always
+        networks:
+          - matching_network
+
+    app:
+        build: 
+          context: ./app
+        volumes:
+          - ./app:/var/www/
+          - ./gunicorn_socket:/tmp/gunicorn_socket
+        depends_on:
+          - db
+        container_name: matching_app
+        # ports:
+        #     - 9876:9876
+        networks:
+          - matching_network
+
+    db:
+        build: ./mysql
+        volumes:
+          - ./mysql/db:/docker-entrypoint-initdb.d
+        environment:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: matching_mysql
+          MYSQL_USER: docker
+          MYSQL_PASSWORD: docker
+          TZ: 'Asia/Tokyo'
+        container_name: matching_db
+        restart: always
+        ports:
+          - 3306:3306
+        networks:
+          - matching_network
+
+volumes:
+    matching_mysql-db:
+        driver: local
+
+networks:
+    matching_network:
+      driver: bridge
