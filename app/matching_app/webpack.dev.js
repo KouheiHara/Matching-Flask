@@ -1,11 +1,12 @@
 'use strict';
 
+require('@babel/register'); // development.jsでES6を使えるようにする
 var webpack = require('webpack');
 var path = require('path');
 var NODE_ENV="development";
 
 var config = {
-    mode: 'development',
+    mode: NODE_ENV,
     entry: {
         'index': path.resolve(__dirname, 'statics/js') + '/index.js'
     },
