@@ -1,0 +1,137 @@
+@import '~antd/dist/antd.css';
+
+.body{
+    font-family: "Helvetica Neue",
+    Arial,
+    "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans",
+    Meiryo,
+    sans-serif;
+}
+.footer-panel {
+    height: 50px;
+    justify-content: space-between;
+}
+
+.footer-home-icon {
+    margin-left: 10px;
+    margin-right: 5px;
+}
+.footer-up-icon {
+    margin-right: 10px;
+    text-align: right;
+}
+.footer-link {
+    margin-left: 5px;
+    margin-right: 5px;
+    font-size: 20px;
+}
+.footer-body {
+    min-height: 400px;
+}
+.footer-profile {
+    margin: 20px 20px 20px;
+    background-color:rgba(224,255, 255, 0.5);
+    padding: 20px 20px 20px 20px;
+    border-radius: 5% 5% 5% 5%;
+    min-height: 400px;
+    width: 450px;
+}
+.footer-copyright{
+    padding: 0px 20px 0px 20px;
+    min-height: 20px;
+}
+.profile-icon {
+    text-align: center;
+}
+.profile-name {
+    font-size: 25px;
+    font-weight: 700;
+}
+.profile-text {
+    text-align:left;
+}
+.profile-str {
+    font-size: 18px;
+    font-weight: 600;
+}
+.copyright {
+    margin: 0 0 0 auto;
+}
+
+.gutter48 {
+    margin-top: 48px;
+    margin-bottom: 48px;
+}
+
+.gutter32 {
+    margin-top: 32px;
+    margin-bottom: 32px;
+}
+
+.gutter64 {
+    margin-top: 64px;
+    margin-bottom: 64px;
+}
+
+.gutter128 {
+    margin-top: 128px;
+    margin-bottom: 128px;
+}
+
+.gutter0128 {
+    margin-top: -64px;
+    margin-bottom: 128px;
+}
+
+.form-textbot {
+    border-radius: 5px 5px 5px 5px !important;
+    &:hover{
+        border-color:#a1edf7 !important;
+    }
+    &:active{
+        border-color:#a1edf7 !important;
+    }
+    &:focus{
+        border-color:#a1edf7 !important;
+    }
+}
+
+.form-col {
+    display: flex;
+    justify-content: center;
+}
+
+.form-button {
+    border-radius: 5px 5px 5px 5px !important;
+    background-color:#a1edf7 !important;
+    border-width: 3px;
+    border-color: #64bee7 !important;
+}
+.form-button:hover {
+    transform: scale(1.05);
+    transition-duration: 0.3s;
+    border-color:#64bee7 !important;
+    box-shadow: 0 2px 25px rgba(0, 0, 0, 0.5);
+}
+.form-button:active {
+    transform: scale(0.9);
+    transition-duration: 0.3s;
+    border-color:#64bee7 !important;
+    box-shadow: 0 2px 25px rgba(0, 0, 0, 0.5);
+}
+.form-button:focus {
+    border-color:#64bee7 !important;
+}
+
+.ant-list-item-meta {
+    display: -webkit-box !important;
+}
+
+.ant-list-item-meta-title {
+    font-size: 30px;
+}
+
+.ant-list-item-meta-description {
+    font-size: 20px;
+}

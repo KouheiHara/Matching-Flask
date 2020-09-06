@@ -1,0 +1,5 @@
+app/matching_app/.env
+web/Dockerfile.prd
+web/server.prd.conf
+docker-compose-prd.yml
+*__pycache__

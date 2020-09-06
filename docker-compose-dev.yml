@@ -4,17 +4,18 @@ services:
     web:
         build: 
           context: ./web
+          dockerfile: Dockerfile.dev
         ports:
           - "80:80"
           - "443:443"
         volumes:
-          - ./web/public:/etc/nginx/public
-          - ../ssl/certs/:/etc/pki/tls/certs/
-          - ../ssl/private/:/etc/pki/tls/private/
+          - ./app/matching_app/public:/etc/nginx/public
           - ./gunicorn_socket:/tmp/gunicorn_socket
         depends_on:
           - app
         container_name: matching_web
+        environment: 
+          TZ: 'Asia/Tokyo'
         restart: always
         networks:
           - matching_network
@@ -28,15 +29,22 @@ services:
         depends_on:
           - db
         container_name: matching_app
+        environment: 
+          FLASK_ENV: 'development'
+          FLASK_APP: '/var/www/matching_app'
+          MYSQL_DATABASE: matching_mysql
+          MYSQL_USER: docker
+          MYSQL_PASSWORD: docker
+          TZ: 'Asia/Tokyo'
         # ports:
-        #     - 9876:9876
+        #    - 9876:9876
         networks:
           - matching_network
 
     db:
-        build: ./mysql
+        build: ./db
         volumes:
-          - ./mysql/db:/docker-entrypoint-initdb.d
+          - matching_mysql-db:/var/lib/mysql
         environment:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: matching_mysql
