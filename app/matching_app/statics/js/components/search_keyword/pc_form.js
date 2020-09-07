@@ -53,6 +53,18 @@ class PcForm extends React.Component {
     }
     updateDimensions() {
         this.setState({ width: window.innerWidth });
+        if (this.state.width > this.state.max_search_width){
+            this.setState({
+                padding_width: 0,
+                searchtext_width: this.state.max_search_width - this.state.searchbutton_width
+            });
+        } else {
+            const padding_width = Math.floor(this.state.width*0.1)
+            this.setState({
+                padding_width: padding_width,
+                searchtext_width:  this.state.width - this.state.searchbutton_width - padding_width*2
+            });
+        }
     }
     onFinish(value) {
         this.props.fetchData(get_search_list_url(value["search"]["keyword"]), "listData")
@@ -61,14 +73,6 @@ class PcForm extends React.Component {
         window.addEventListener('resize', this.updateDimensions());
     }
     render() {
-        if (this.state.width > this.state.max_search_width){
-            this.state.padding_width = 0
-            this.state.searchtext_width = this.state.max_search_width - this.state.searchbutton_width
-        } else {
-            this.state.padding_width = Math.floor(this.state.width*0.1)
-            const offset = this.state.padding_width*2
-            this.state.searchtext_width = this.state.width - this.state.searchbutton_width - offset
-        }
         return (
             <Col span={24} className="form-col">
                 <Form {...layout} 

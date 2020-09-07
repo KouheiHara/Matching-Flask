@@ -2,7 +2,7 @@
   "name": "matching_app",
   "scripts": {
     "build": "webpack --config webpack.dev.js",
-    "watch": "webpack --watch --config webpack.dev.js",
+    "watch": "webpack --watch --config webpack.dev.jso",
     "production": "webpack --config webpack.prd.js"
   },
   "version": "1.0.0",

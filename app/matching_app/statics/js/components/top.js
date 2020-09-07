@@ -23,16 +23,20 @@ class TopSlider extends React.Component {
     }
     updateDimensions() {
         this.setState({ width: window.innerWidth });
+        if (this.state.width > this.state.defwidth) {
+            this.setState({
+                cellspace: this.state.width - this.state.defwidth
+            })
+        } else {
+            this.setState({
+                slidewidth: String(this.state.width)+"px"
+            })
+        }
     };
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions);
     }
     render() {
-        if (this.state.width > this.state.defwidth) {
-            this.state.cellspace = this.state.width - this.state.defwidth
-        } else {
-            this.state.slidewidth = String(this.state.width)+"px"
-        }
         return (
             <Carousel
                 slidesToShow={1}

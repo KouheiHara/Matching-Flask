@@ -52,7 +52,15 @@ class MobileForm extends React.Component {
         this.onFinish = this.onFinish.bind(this)
     }
     updateDimensions() {
-        this.setState({ width: window.innerWidth });
+        this.setState({ 
+            width: window.innerWidth
+        });
+        const padding_width = Math.floor(this.state.width*0.1)
+        this.setState({ 
+            padding_width: padding_width,
+            searchtext_width: this.state.width - padding_width*2,
+            searchbutton_width: this.state.width - padding_width*2
+        });
     }
     onFinish(value) {
         this.props.fetchData(get_search_list_url(value["search"]["keyword"]), "listData")
@@ -61,10 +69,6 @@ class MobileForm extends React.Component {
         window.addEventListener('resize', this.updateDimensions());
     }
     render() {
-        this.state.padding_width = Math.floor(this.state.width*0.1)
-        const offset = this.state.padding_width*2
-        this.state.searchtext_width = this.state.width - offset
-        this.state.searchbutton_width = this.state.width - offset
         return (
             <Col span={24} className="form-col">
                 <Form {...layout} 

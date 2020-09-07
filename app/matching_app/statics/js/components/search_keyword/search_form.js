@@ -41,13 +41,15 @@ class SearchForm extends React.Component {
         this.updateDimensions = this.updateDimensions.bind(this)
     }
     updateDimensions() {
-        this.setState({ width: window.innerWidth });
+        this.setState({ 
+            width: window.innerWidth,
+            padding_width: Math.floor(window.innerWidth*0.1)
+        });
     }
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions());
     }
     render() {
-        this.state.padding_width = Math.floor(this.state.width*0.1)
         if (this.state.width < MD_SIZE) {
             return (
             <Col>
