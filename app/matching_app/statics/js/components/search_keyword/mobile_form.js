@@ -66,8 +66,8 @@ class MobileForm extends React.Component {
         this.props.fetchData(get_search_list_url(value["search"]["keyword"]), "listData")
     }
     componentDidMount() {
-        window.addEventListener('load', this.updateDimensions);
         window.addEventListener('resize', this.updateDimensions);
+        this.updateDimensions()
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateDimensions);

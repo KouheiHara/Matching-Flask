@@ -48,8 +48,8 @@ class SearchForm extends React.Component {
         });
     }
     componentDidMount() {
-        window.addEventListener('load', this.updateDimensions);
         window.addEventListener('resize', this.updateDimensions);
+        this.updateDimensions()
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateDimensions);
