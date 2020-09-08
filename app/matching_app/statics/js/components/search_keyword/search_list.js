@@ -19,17 +19,23 @@ class SearchList extends React.Component {
             data: [],
             list: [],
         }
+        this.updateDimensions = this.updateDimensions.bind(this)
     }
     updateDimensions() {
-        this.setState({ width: window.innerWidth });
-        if (this.state.width < XS_SIZE) {
-            this.setState({ side_percentage: "10%" })
-        } else {
-            this.setState({ side_percentage: "20%" })
+        let side_percentage= "20%"
+        if (window.innerWidth < XS_SIZE) {
+            side_percentage = "10%"
         }
+        this.setState({
+            width: window.innerWidth,
+            side_percentage: side_percentage
+        });
     }
     componentDidMount() {
-        window.addEventListener('resize', this.updateDimensions());
+        window.addEventListener('resize', this.updateDimensions);
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateDimensions);
     }
     render() {
         if (this.props.listData.data) {

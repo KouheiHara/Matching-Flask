@@ -36,6 +36,7 @@ class SearchForm extends React.Component {
             submit: false,
             error: false,
             loading: false,
+            fontSize: 20,
             padding_width: 20
         }
         this.updateDimensions = this.updateDimensions.bind(this)
@@ -47,7 +48,10 @@ class SearchForm extends React.Component {
         });
     }
     componentDidMount() {
-        window.addEventListener('resize', this.updateDimensions());
+        window.addEventListener('resize', this.updateDimensions);
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateDimensions);
     }
     render() {
         if (this.state.width < MD_SIZE) {
@@ -61,7 +65,7 @@ class SearchForm extends React.Component {
                 </Row>
                 <Row className="gutter0128">
                     <p style={{
-                            fontSize:20,
+                            fontSize: this.state.fontSize,
                             paddingLeft: this.state.padding_width,
                             paddingRight: this.state.padding_width
                         }}>
@@ -82,7 +86,7 @@ class SearchForm extends React.Component {
                 </Row>
                 <Row className="gutter0128 form-col">
                     <p style={{
-                            fontSize:20,
+                            fontSize: this.state.fontSize,
                             paddingLeft: this.state.padding_width,
                             paddingRight: this.state.padding_width
                         }}>

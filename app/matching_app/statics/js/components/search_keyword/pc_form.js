@@ -46,7 +46,7 @@ class PcForm extends React.Component {
             searchbutton_width: 120,
             searchbutton_height: 120,
             padding_width: 20,
-            fontsize: 30,
+            fontsize: 30
         }
         this.updateDimensions = this.updateDimensions.bind(this)
         this.onFinish = this.onFinish.bind(this)
@@ -70,7 +70,10 @@ class PcForm extends React.Component {
         this.props.fetchData(get_search_list_url(value["search"]["keyword"]), "listData")
     }
     componentDidMount() {
-        window.addEventListener('resize', this.updateDimensions());
+        window.addEventListener('resize', this.updateDimensions);
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateDimensions);
     }
     render() {
         return (
@@ -89,20 +92,19 @@ class PcForm extends React.Component {
                                     required: true,
                                 },
                             ]}> 
-                            <Input className="form-textbot" style={{ 
+                            <Input className="form-textbot" style={{
                                 width: this.state.searchtext_width+"px",
-                                height:this.state.searchbutton_height+"px",
-                                fontSize: this.state.fontsize
-                            }} />
+                                height: this.state.searchbutton_height+"px"
+                                }}/>
                         </Form.Item>
                         <Form.Item justify="center">
                             <Button
                                 htmlType="submit"
                                 className="form-button"
-                                style={{ 
+                                style={{
                                     width: this.state.searchbutton_width+"px",
                                     height: this.state.searchbutton_height+"px"
-                                }}>
+                                    }}>
                                 <span className="button-text"
                                     style={{ 
                                         fontSize: this.state.fontsize
