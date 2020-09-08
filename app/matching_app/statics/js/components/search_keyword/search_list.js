@@ -32,6 +32,7 @@ class SearchList extends React.Component {
         });
     }
     componentDidMount() {
+        window.addEventListener('load', this.updateDimensions);
         window.addEventListener('resize', this.updateDimensions);
     }
     componentWillUnmount() {
