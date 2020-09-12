@@ -7,12 +7,14 @@ var NODE_ENV="production";
 
 var config = {
     mode: NODE_ENV,
+    // ファイルサイズを抑えるため、spaにはしない
     entry: {
-        'index': path.resolve(__dirname, 'statics/js') + '/index.js'
+        index: path.resolve(__dirname, 'statics/js') + '/index.js',
+        user: path.resolve(__dirname, 'statics/js') + '/user.js',
     },
     output: {
         path: path.resolve(__dirname, 'public/js'),
-        filename: 'bundle.js'
+        filename: '[name].bundle.js'
     },
 
     module: {

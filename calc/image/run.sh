@@ -1,0 +1,1 @@
+docker run -it --name matching_calc matching-calc:latest /bin/bash

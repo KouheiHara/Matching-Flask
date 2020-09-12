@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux'
 import '../../css/app.scss';
 import Carousel from 'nuka-carousel';
-import { Row, Col } from 'antd';
 import Slide1Img from '../../img/top/slide1_5.png';
 import Slide2Img from '../../img/top/slide2_5.png';
 import SearchForm from './search_keyword/search_form';

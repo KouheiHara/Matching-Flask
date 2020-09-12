@@ -3,3 +3,10 @@ web/Dockerfile.prd
 web/server.prd.conf
 docker-compose-prd.yml
 *__pycache__
+*.log
+*node_modules
+*.bundle.js
+robots.txt
+sitemap.xml
+app/matching_app/public/img/*
+!app/matching_app/public/img/favicon.png

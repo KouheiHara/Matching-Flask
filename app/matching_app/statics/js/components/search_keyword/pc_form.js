@@ -6,8 +6,6 @@ import {
     Form,
     Input,
     Button,
-    Result,
-    Progress
 } from 'antd';
 import { connect } from 'react-redux'
 import { fetchListData } from '../../actions/data';
@@ -94,6 +92,7 @@ class PcForm extends React.Component {
                                 },
                             ]}> 
                             <Input className="form-textbot" style={{
+                                fontSize: this.state.fontsize,
                                 width: this.state.searchtext_width+"px",
                                 height: this.state.searchbutton_height+"px"
                                 }}/>

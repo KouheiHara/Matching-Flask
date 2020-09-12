@@ -8,6 +8,7 @@ load_dotenv(dotenv_path)
 class Config(object):
     DB_DEBUG = True
     DB_POOL_RECYCLE=60
+    CLOUD_NUMS = 30
 
     # v2 API
     CONSUMER_KEY = os.environ.get('CONSUMER_KEY')

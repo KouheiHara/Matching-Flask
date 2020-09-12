@@ -1,9 +1,9 @@
 import React from 'react';
 import '../../../css/app.scss';
-import { Row, Col, List, } from 'antd';
+import { Row} from 'antd';
 import { connect } from 'react-redux'
 import { fetchListData } from '../../actions/data';
-import { LikeOutlined, DislikeOutlined } from '@ant-design/icons';
+import { LikeOutlined, DislikeOutlined, SearchOutlined } from '@ant-design/icons';
 
 
 const neutralcolor = "#696969"
@@ -25,7 +25,9 @@ function get_plus_dislike_num_url(id) {
 function get_minus_dislike_num_url(id) {
     return `${host}/api/check_like?user_id=${id}&like=0&check=0`
 }
-
+function get_user_url(user_id) {
+    return `${host}/user/${user_id}`
+}
 
 class LikeDislikeButton extends React.Component {
     constructor(props) {
@@ -40,6 +42,10 @@ class LikeDislikeButton extends React.Component {
         }
         this.clickLikeIcon = this.clickLikeIcon.bind(this)
         this.clickDislikeIcon = this.clickDislikeIcon.bind(this)
+        this.clickSearchIcon = this.clickSearchIcon.bind(this)
+    }
+    clickSearchIcon() {
+        window.open(get_user_url(this.props.item["user_id"]), '_blank'); 
     }
     clickLikeIcon() {
         if (this.state.clickedlike) {
@@ -102,6 +108,9 @@ class LikeDislikeButton extends React.Component {
                     style={{fontSize: '30px', color:this.state.dislikecolor, cursor: 'pointer'}}
                     onClick={()=>this.clickDislikeIcon()}/>
                     <span style={{fontSize: '20px', color:this.state.dislikecolor}}>{this.state.dislikenum}</span>
+                <SearchOutlined
+                    style={{fontSize: '30px', cursor: 'pointer'}}
+                    onClick={()=>this.clickSearchIcon()}/>
             </Row>
         );    
     }

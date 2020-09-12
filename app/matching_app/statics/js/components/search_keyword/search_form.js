@@ -1,11 +1,7 @@
 import React from 'react';
 import '../../../css/app.scss';
-import { 
-    Row,
-    Col,
-
-} from 'antd';
-import { XS_SIZE, MD_SIZE } from './../common/config';
+import { Row, Col} from 'antd';
+import { MD_SIZE } from './../common/config';
 import KeywordIconImg from '../../../img/search/keyword.svg';
 import { connect } from 'react-redux'
 import { fetchListData } from '../../actions/data';
@@ -36,7 +32,7 @@ class SearchForm extends React.Component {
             submit: false,
             error: false,
             loading: false,
-            fontSize: 20,
+            fontSize: 30,
             padding_width: 20
         }
         this.updateDimensions = this.updateDimensions.bind(this)

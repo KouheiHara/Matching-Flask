@@ -3,7 +3,7 @@ import '../../../css/app.scss';
 import { Row, Col, List, Avatar } from 'antd';
 import { connect } from 'react-redux'
 import { fetchListData } from '../../actions/data';
-import { XS_SIZE } from './../common/config';
+import { MD_SIZE } from './../common/config';
 import LikeDislikeButton from './likedislike_button';
 
 
@@ -22,9 +22,9 @@ class SearchList extends React.Component {
         this.updateDimensions = this.updateDimensions.bind(this)
     }
     updateDimensions() {
-        let side_percentage= "20%"
-        if (window.innerWidth < XS_SIZE) {
-            side_percentage = "10%"
+        let side_percentage= "10%"
+        if (window.innerWidth > MD_SIZE) {
+            side_percentage = "20%"
         }
         this.setState({
             width: window.innerWidth,

@@ -1,13 +1,10 @@
 import React from 'react';
 import '../../../css/app.scss';
 import { 
-    Row,
     Col,
     Form,
     Input,
     Button,
-    Result,
-    Progress
 } from 'antd';
 import { connect } from 'react-redux'
 import { fetchListData } from '../../actions/data';
