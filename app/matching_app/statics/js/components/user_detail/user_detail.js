@@ -30,9 +30,11 @@ class UserDetail extends React.Component {
             fontsize: 30,
             initLoading: false,
             user_id: 0,
+            lastwidth: window.innerWidth,
         }
         this.updateDimensions = this.updateDimensions.bind(this)
         this.getUserData = this.getUserData.bind(this)
+        this.eventListenerWidth = this.eventListenerWidth.bind(this)
     }
     updateDimensions() {
         let side_percentage= "20%"
@@ -51,13 +53,21 @@ class UserDetail extends React.Component {
         this.props.fetchData(get_user_info_url(user_id), "userInfo")
         this.props.fetchData(get_user_list_url(user_id), "userData")
     }
+    eventListenerWidth() {
+        if (this.state.lastwidth != window.innerWidth) {
+            this.setState({
+                lastwidth: window.innerWidth
+            })
+            this.updateDimensions()
+        }
+    }
     componentDidMount() {
-        window.addEventListener('resize', this.updateDimensions);
+        window.addEventListener('resize', this.eventListenerWidth);
         this.updateDimensions()
         this.getUserData()
     }
     componentWillUnmount() {
-        window.removeEventListener('resize', this.updateDimensions);
+        window.removeEventListener('resize', this.eventListenerWidth);
     }
     render() {
         if (this.props.userData.data && !this.state.initLoading) {

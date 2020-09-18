@@ -16,7 +16,6 @@ var config = {
         path: path.resolve(__dirname, 'public/js'),
         filename: '[name].bundle.js'
     },
-
     module: {
         rules: [
             // js
@@ -34,10 +33,9 @@ var config = {
                     }
                 }
             },
-            // sass
+            // scss
             {
                 test: /\.(scss|css)$/,
-                exclude: /node_modules/,
                 use: [
                     'style-loader',
                     {

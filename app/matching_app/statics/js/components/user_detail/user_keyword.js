@@ -6,6 +6,10 @@ import { connect } from 'react-redux';
 import { LoadingOutlined, LikeOutlined, DislikeOutlined } from '@ant-design/icons';
 import { fetchListData } from '../../actions/data';
 
+import "tippy.js/dist/tippy.css";
+import "tippy.js/animations/scale.css";
+
+const keywordcloud_text = "直近の投稿でよく発言されている単語"
 
 class DisplayKeyowrdCloud extends React.Component {
     constructor(props) {
@@ -17,13 +21,20 @@ class DisplayKeyowrdCloud extends React.Component {
                 onWordMouseOver: console.log,
                 getWordTooltip: word => `${word.text} (${word.value}) [${word.value > 50 ? "good" : "bad"}]`,
             },
-            size : [500, 500], //横,縦
+            width : (window.innerWidth > 600) ? 600 : window.innerWidth,
+            lastwidth: window.innerWidth,
             words: this.props.data
         }
+        this.updateDimensions = this.updateDimensions.bind(this)
+        this.eventListenerWidth = this.eventListenerWidth.bind(this)
         this.setWords = this.setWords.bind(this)
     }
+    updateDimensions() {
+        this.setState({
+            width: (window.innerWidth > 600) ? 600 : window.innerWidth,
+        });
+    }
     setWords() {
-        const cwidth = window.innerWidth
         var words = this.props.data
         var new_words = []
         words.forEach(element => 
@@ -33,22 +44,41 @@ class DisplayKeyowrdCloud extends React.Component {
             })
         )
         this.setState({
-            size : [cwidth, 300],
             words: new_words
         })
     }
+    eventListenerWidth() {
+        if (this.state.lastwidth != window.innerWidth) {
+            this.setState({
+                lastwidth: window.innerWidth
+            })
+            this.updateDimensions()
+        }
+    }
     componentDidMount() {
+        window.addEventListener('resize', this.eventListenerWidth);
+        this.updateDimensions()
         this.setWords()
-        setInterval(() => {
-            this.forceUpdate();
-        }, 4000);
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.eventListenerWidth);
     }
     render() {
       return (
-        <ReactWordcloud
-            size={this.state.size}
-            words={this.state.words}
-        />
+        <div style={{ backgroundColor: '#efefef',
+            height: "300px",
+            width: "100%" }}>
+            <ReactWordcloud
+                options={{
+                    fontSizes: [15, 50],
+                    rotations: 1,
+                    rotationAngles: [0, 0],
+                }}
+                className="form-col"
+                size={[this.state.width, 100]}
+                words={this.state.words}
+            />
+        </div>
       );
     }
   }
@@ -62,9 +92,11 @@ class UserKeyword extends React.Component {
             error: false,
             loading: false,
             fontSize: "30px",
-            padding_width: 10
+            padding_width: 10,
+            lastwidth: window.innerWidth,
         }
         this.updateDimensions = this.updateDimensions.bind(this)
+        this.eventListenerWidth = this.eventListenerWidth.bind(this)
     }
     updateDimensions() {
         this.setState({ 
@@ -72,17 +104,25 @@ class UserKeyword extends React.Component {
             padding_width: Math.floor(window.innerWidth*0.1)
         });
     }
+    eventListenerWidth() {
+        if (this.state.lastwidth != window.innerWidth) {
+            this.setState({
+                lastwidth: window.innerWidth
+            })
+            this.updateDimensions()
+        }
+    }
     componentDidMount() {
-        window.addEventListener('resize', this.updateDimensions);
+        window.addEventListener('resize', this.eventListenerWidth);
         this.updateDimensions()
     }
     componentWillUnmount() {
-        window.removeEventListener('resize', this.updateDimensions);
+        window.removeEventListener('resize', this.eventListenerWidth);
     }
     render() {
         if (this.props.keywordCloud.data) {
             return (
-                <Col>
+                <Col style={{width:"100%"}}>
                     <Col className="gutter64">
                         <Row
                             style={{
@@ -105,7 +145,14 @@ class UserKeyword extends React.Component {
                                 <span style={{fontSize: '20px'}}>{this.props.userInfo.data["dislike"]}</span>
                         </Row>
                     </Col>
-                    <Col span={24} className="gutter32" >
+                    <Col className="gutter32" span={24}>
+                        <p style={{
+                                fontSize: "20px",
+                                paddingLeft: this.state.padding_width,
+                                paddingRight: this.state.padding_width
+                            }}>
+                            {keywordcloud_text}
+                        </p>
                         <DisplayKeyowrdCloud data={this.props.keywordCloud.data["words"]}/>
                     </Col>
                 </Col>
@@ -113,7 +160,7 @@ class UserKeyword extends React.Component {
         } else {
             if (this.props.userInfo.data) {
                 return (
-                    <Col>
+                    <Col style={{width:"100%"}}>
                         <Col className="gutter64">
                             <Row
                                 style={{
@@ -143,7 +190,7 @@ class UserKeyword extends React.Component {
                 );
             } else {
                 return (
-                    <Col>
+                    <Col style={{width:"100%"}}>
                         <Col className="gutter64">
                         </Col>
                         <Col span={24} className="form-col gutter32" >
