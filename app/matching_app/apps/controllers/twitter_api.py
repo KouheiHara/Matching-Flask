@@ -3,18 +3,18 @@ import datetime
 import urllib.request
 from abc import ABCMeta, abstractmethod
 from requests_oauthlib import OAuth1Session
-from matching_app import app
-from matching_app.apps.common.error import *
-from matching_app.apps.models.db import *
-from matching_app.apps.controllers.twitter import TwitterManager
-from matching_app.apps.controllers.user import UserManager
-from matching_app.apps.controllers.tweet import TweetManager
+from matching_app import app  # noqa
+from matching_app.apps.common.error import *  # noqa
+from matching_app.apps.models.db import *  # noqa
+from matching_app.apps.controllers.twitter import TwitterManager  # noqa
+from matching_app.apps.controllers.user import UserManager  # noqa
+from matching_app.apps.controllers.tweet import TweetManager  # noqa
 
 
 class TwitterApiManager(metaclass=ABCMeta):
     @abstractmethod
     def _oauth_v1(self) -> None:
-        #https://api.twitter.com/oauth2/tokenへのアクセス
+        # https://api.twitter.com/oauth2/tokenへのアクセス
         self.twitter = OAuth1Session(
             app.config.get("CONSUMER_KEY"),
             app.config.get("CONSUMER_SECRET_KEY"),
@@ -22,7 +22,7 @@ class TwitterApiManager(metaclass=ABCMeta):
             app.config.get("API_SECRET_KEY"))
 
     @abstractmethod
-    def _request(self, url:str, params:dict) -> dict:
+    def _request(self, url: str, params: dict) -> dict:
         req = self.twitter.get(url, params=params)
         if req.status_code == 200:
             res = json.loads(req.text)
@@ -37,13 +37,14 @@ class TwitterApiManager(metaclass=ABCMeta):
 
 class SearchTweetApi(TwitterApiManager, TwitterManager):
     SEARCH_URL = 'https://api.twitter.com/1.1/search/tweets.json'
+
     def __init__(self) -> None:
         self.__params = {
             "q": "",
             "count": 100,
             "lang": "ja"
         }
-    
+
     @property
     def params(self):
         return self.__params
@@ -51,18 +52,18 @@ class SearchTweetApi(TwitterApiManager, TwitterManager):
     def _oauth_v1(self) -> None:
         return super()._oauth_v1()
 
-    def _request(self, url:str, params:str) -> dict:
+    def _request(self, url: str, params: str) -> dict:
         self._oauth_v1()
         return super()._request(url, params)
 
-    def get_data(self, keyword:str) -> list:
+    def get_data(self, keyword: str) -> list:
         url = self.SEARCH_URL
         self.__params["q"] = keyword
         data = self._request(url, self.__params)
         ex_data = self._extract_tweets(data)
         return self._save_and_refer_data(ex_data)
 
-    def _save_and_refer_data(self, datas:list) -> list:
+    def _save_and_refer_data(self, datas: list) -> list:
         users = UserManager.get_all_user()
 
         user_ids = [user.twitter_user_id for user in users]
@@ -91,10 +92,10 @@ class SearchTweetApi(TwitterApiManager, TwitterManager):
         if len(save_datas) > 0:
             um = UserManager()
             um.save_users(save_datas)
-        
+
         return new_datas
 
-    def _extract_tweets(self, res:dict) -> list:
+    def _extract_tweets(self, res: dict) -> list:
         datas = []
         for line in res['statuses']:
             data = {
@@ -117,6 +118,7 @@ class SearchTweetApi(TwitterApiManager, TwitterManager):
 
 class SearchUserTimelineApi(TwitterApiManager, TwitterManager):
     SEARCH_URL = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
+
     def __init__(self) -> None:
         self.__params = {
             "screen_name": "",
@@ -126,42 +128,44 @@ class SearchUserTimelineApi(TwitterApiManager, TwitterManager):
     @property
     def params(self):
         return self.__params
-    
+
     def _oauth_v1(self) -> None:
         return super()._oauth_v1()
 
-    def _request(self, url:str, params:str) -> dict:
+    def _request(self, url: str, params: str) -> dict:
         self._oauth_v1()
         return super()._request(url, params)
 
-    def get_data(self, user_id:str) -> list:
+    def get_data(self, user_id: str) -> list:
         url = self.SEARCH_URL
         self.__params["screen_name"] = user_id
         data = self._request(url, self.__params)
         ex_data = self._extract_tweets(data)
         return self._save_and_refer_data(ex_data)
 
-    def _save_and_refer_data(self, datas:list) -> list:
+    def _save_and_refer_data(self, datas: list) -> list:
         tweet_ids = [data["tweet_id"] for data in datas]
         already_tweets = TweetManager.get_tweets(tweet_ids=tweet_ids)
 
         save_datas = []
-        already_tweet_ids = [already_tweet.tweet_id for already_tweet in already_tweets]
+        already_tweet_ids = [
+            already_tweet.tweet_id for already_tweet in already_tweets]
         for ind, data in enumerate(datas):
             if data["tweet_id"] in already_tweet_ids:
-                tweet = already_tweets[already_tweet_ids.index(data["tweet_id"])]
+                tweet = already_tweets[already_tweet_ids.index(
+                    data["tweet_id"])]
                 tweet.retweet_count = data["retweet_count"]
                 tweet.favorite_count = data["favorite_count"]
                 save_datas.append(tweet)
             else:
                 save_datas.append(
                     Tweet(
-                        twitter_user_id = data["user_id"],
-                        tweet_id = data["tweet_id"],
-                        text = data["text"],
-                        retweet_count = data["retweet_count"],
-                        favorite_count = data["favorite_count"],
-                        tweet_url = data["tweet_url"]
+                        twitter_user_id=data["user_id"],
+                        tweet_id=data["tweet_id"],
+                        text=data["text"],
+                        retweet_count=data["retweet_count"],
+                        favorite_count=data["favorite_count"],
+                        tweet_url=data["tweet_url"]
                     )
                 )
 
@@ -170,7 +174,7 @@ class SearchUserTimelineApi(TwitterApiManager, TwitterManager):
             tm.save_tweets(save_datas)
         return datas
 
-    def _extract_tweets(self, res:dict) -> list:
+    def _extract_tweets(self, res: dict) -> list:
         datas = []
         for line in res:
             data = {

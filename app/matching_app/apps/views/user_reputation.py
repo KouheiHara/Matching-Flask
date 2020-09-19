@@ -1,8 +1,8 @@
 import traceback
 from flask import request
 from flask_restful import Resource
-from matching_app import app
-from matching_app.apps.controllers.user import UserManager
+from matching_app import app  # noqa
+from matching_app.apps.controllers.user import UserManager  # noqa
 
 
 class CheckLike(Resource):
