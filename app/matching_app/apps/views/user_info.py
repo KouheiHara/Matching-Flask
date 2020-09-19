@@ -3,6 +3,8 @@ from flask import request
 from flask_restful import Resource
 from matching_app import app
 from matching_app.apps.controllers.user import UserManager
+from matching_app.apps.controllers.keyword import KeywordManager
+from matching_app.apps.controllers.tweet import TweetManager
 
 
 class UserInfo(Resource):
@@ -31,5 +33,4 @@ class UserInfo(Resource):
         if user_id is not None:
             data = UserManager.get_user_info(user_id)
         return data
-
 

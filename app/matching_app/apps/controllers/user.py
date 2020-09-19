@@ -1,10 +1,9 @@
 from matching_app.apps.models.db import *
-from matching_app.apps.controllers.twitter_api import TwitterManager
+from matching_app.apps.controllers.twitter import TwitterManager
 
 
 class UserManager(object):
-    @staticmethod
-    def update_reputation(user_id:str, like:bool, plus:bool) -> None:
+    def update_reputation(self, user_id:str, like:bool, plus:bool) -> None:
         with session_scope() as session:
             user = session.query(
                 User
@@ -39,3 +38,21 @@ class UserManager(object):
             user_dict["like"] = user.like
             user_dict["dislike"] = user.dislike
         return user_dict
+
+    @staticmethod
+    def get_all_user() -> list:
+        users = None
+        with session_scope() as session:
+            users = session.query(
+                User.twitter_user_id,
+                User.twitter_user_name,
+                User.like,
+                User.dislike,
+                User.icon_url
+            ).filter().all()
+        return users
+    
+    def save_users(self, users: list) -> None:
+        with session_scope() as session:
+            session.bulk_save_objects(users)
+            session.commit()

@@ -30,6 +30,6 @@ class KeywordCloud(Resource):
     def main(self):
         user_id = self._get_user_id()
         km = KeywordManager()
-        data = km.get_keyword_cloud(user_id)
+        data = km.get_and_save_keyword_cloud(user_id)
         return data
 

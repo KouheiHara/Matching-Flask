@@ -29,5 +29,5 @@ class CheckLike(Resource):
 
     def main(self):
         user_id, like, check = self._get_user_id()
-        UserManager.update_reputation(user_id, like, check)
-
+        um = UserManager()
+        um.update_reputation(user_id, like, check)
