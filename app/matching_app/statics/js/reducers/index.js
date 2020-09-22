@@ -1,13 +1,15 @@
 import { combineReducers } from 'redux';
-import { 
+import {
     getDataError,
     loadData,
     data,
     listData,
     userData,
     keywordCloud,
-    userInfo
+    userInfo,
+    userCsv
 } from './data';
+
 
 export default combineReducers({
     getDataError,
@@ -16,5 +18,6 @@ export default combineReducers({
     listData,
     userData,
     keywordCloud,
-    userInfo
+    userInfo,
+    userCsv
 });

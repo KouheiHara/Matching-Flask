@@ -1,10 +1,20 @@
 from matching_app import app  # noqa
 from matching_app.apps.models.db import *  # noqa
 from matching_app.apps.services.morphological_analysis import *  # noqa
-from matching_app.apps.controllers.tweet import TweetManager  # noqa
 
 
 class KeywordManager(object):
+    @staticmethod
+    def get_tweets(user_id: str) -> list:
+        tweets = []
+        with session_scope() as session:
+            tweets = session.query(
+                Tweet.text
+            ).filter(
+                Tweet.twitter_user_id == user_id
+            ).all()
+        return tweets
+
     def _delete_cloud_keyword(self, morphological_text_id: str) -> None:
         with session_scope() as session:
             session.query(
@@ -17,7 +27,7 @@ class KeywordManager(object):
     @staticmethod
     def get_combined_text(user_id: str) -> str:
         c_t = ""
-        tweets = TweetManager.get_tweets(user_id=user_id)
+        tweets = KeywordManager.get_tweets(user_id)
         for tweet in tweets:
             c_t += tweet.text+"\n"
         return c_t

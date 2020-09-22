@@ -145,8 +145,8 @@ class SearchUserTimelineApi(TwitterApiManager, TwitterManager):
 
     def _save_and_refer_data(self, datas: list) -> list:
         tweet_ids = [data["tweet_id"] for data in datas]
-        already_tweets = TweetManager.get_tweets(tweet_ids=tweet_ids)
-
+        already_tweets = TweetManager.get_tweets(
+            tweet_ids=tweet_ids)
         save_datas = []
         already_tweet_ids = [
             already_tweet.tweet_id for already_tweet in already_tweets]
@@ -168,7 +168,6 @@ class SearchUserTimelineApi(TwitterApiManager, TwitterManager):
                         tweet_url=data["tweet_url"]
                     )
                 )
-
         if len(save_datas) > 0:
             tm = TweetManager()
             tm.save_tweets(save_datas)

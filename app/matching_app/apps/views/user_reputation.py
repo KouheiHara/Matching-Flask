@@ -24,7 +24,7 @@ class CheckLike(Resource):
         return (
             request.args.get('user_id'),
             bool(int(request.args.get('like'))),
-            bool(int(request.args.get('check'))),
+            bool(int(request.args.get('check')))
         )
 
     def main(self):

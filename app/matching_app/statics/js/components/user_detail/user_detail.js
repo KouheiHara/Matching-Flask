@@ -6,8 +6,10 @@ import { fetchListData } from '../../actions/data';
 import { XS_SIZE } from '../common/config';
 import UserList from './user_list';
 import UserKeyword from './user_keyword';
+import UserCsv from './user_csv';
 
-var host = location.protocol+"//"+location.host
+
+var host = location.protocol + "//" + location.host
 
 function get_user_info_url(keyword) {
     return `${host}/api/user_info?user_id=${keyword}`
@@ -21,10 +23,11 @@ function get_keyword_cloud_url(keyword) {
     return `${host}/api/keyword_cloud?user_id=${keyword}`
 }
 
+
 class UserDetail extends React.Component {
     constructor(props) {
         super(props);
-        this.state={
+        this.state = {
             width: window.innerWidth,
             side_percentage: "10%",
             fontsize: 30,
@@ -37,7 +40,7 @@ class UserDetail extends React.Component {
         this.eventListenerWidth = this.eventListenerWidth.bind(this)
     }
     updateDimensions() {
-        let side_percentage= "20%"
+        let side_percentage = "20%"
         if (window.innerWidth < XS_SIZE) {
             side_percentage = "10%"
         }
@@ -49,7 +52,7 @@ class UserDetail extends React.Component {
     getUserData() {
         var params = location.pathname.split('/')
         var user_id = params[2].split("?")[0]
-        this.setState({user_id: user_id})
+        this.setState({ user_id: user_id })
         this.props.fetchData(get_user_info_url(user_id), "userInfo")
         this.props.fetchData(get_user_list_url(user_id), "userData")
     }
@@ -71,16 +74,17 @@ class UserDetail extends React.Component {
     }
     render() {
         if (this.props.userData.data && !this.state.initLoading) {
-            this.state.initLoading=true
+            this.state.initLoading = true
             this.props.fetchData(get_keyword_cloud_url(this.state.user_id), "keywordCloud")
         }
         return (
             <Row>
                 <UserKeyword />
+                <UserCsv user_id={this.state.user_id} />
                 <UserList />
             </Row>
         );
-    } 
+    }
 }
 
 const mapStateToProps = state => ({
@@ -91,8 +95,8 @@ const mapStateToProps = state => ({
     keywordCloud: state.keywordCloud,
     userInfo: state.userInfo
 });
-  
-const mapDispatchToProps= dispatch => ({
+
+const mapDispatchToProps = dispatch => ({
     fetchData: (url, type) => dispatch(fetchListData(url, type)),
 });
 

@@ -7,21 +7,17 @@ class TweetManager(object):
         tweets = None
         with session_scope() as session:
             if user_id:
-                tweets = session.query(
-                    Tweet.text
-                ).filter(
-                    Tweet.twitter_user_id == user_id
-                ).all()
+                filter_args = [Tweet.twitter_user_id == user_id]
             elif tweet_ids:
-                tweets = session.query(
-                    Tweet
-                ).filter(
-                    Tweet.tweet_id.in_(tweet_ids)
-                ).all()
+                filter_args = [Tweet.tweet_id.in_(tweet_ids)]
+            tweets = session.query(
+                Tweet
+            ).filter(
+                *filter_args
+            ).all()
         return tweets
 
     def save_tweets(self, tweets: list) -> None:
         with session_scope() as session:
             session.bulk_save_objects(tweets)
             session.commit()
-

@@ -23,13 +23,10 @@ class KeywordCloud(Resource):
             }
 
     def _get_user_id(self):
-        return (
-            request.args.get('user_id'),
-        )
+        return request.args.get('user_id')
 
     def main(self):
         user_id = self._get_user_id()
         km = KeywordManager()
         data = km.get_and_save_keyword_cloud(user_id)
         return data
-
