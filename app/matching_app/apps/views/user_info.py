@@ -55,7 +55,6 @@ class UserCsv(UserInfo):
         user_id = self._get_user_id()
         row_datas = []
         if user_id is not None:
-            row_datas.append(UserManager.get_user_info(user_id))
             tweets = TweetManager.get_tweets(
                 user_id=user_id
             )
