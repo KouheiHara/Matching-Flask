@@ -1,13 +1,14 @@
 import traceback
-from flask import request
-from flask_restful import Resource
-from matching_app import app
-from matching_app.apps.controllers.twitter_api import SearchTweetApi
+from matching_app import app  # noqa
+from matching_app.apps.controllers.twitter_api import SearchTweetApi  # noqa
+from matching_app.apps.views.auth import Auth  # noqa
+from matching_app.apps.views.post import Post  # noqa
 
 
-class SearchList(Resource):
-    def get(self):
+class SearchList(Post, Auth):
+    def post(self):
         try:
+            self.req_init()
             data = self.main()
             return {
                 'status': "true",
@@ -23,10 +24,9 @@ class SearchList(Resource):
             }
 
     def main(self):
-        keyword = request.args.get('keyword')
+        value = self.get_value(["keyword"])
         data = []
-        if keyword is not None:
+        if "keyword" in value.keys():
             twitter = SearchTweetApi()
-            data = twitter.get_data(keyword)
+            data = twitter.get_data(value["keyword"])
         return data
-

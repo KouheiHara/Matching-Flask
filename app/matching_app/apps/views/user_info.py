@@ -1,17 +1,19 @@
 import traceback
-from flask import request, make_response
-from flask_restful import Resource
+from flask import make_response
 from matching_app import app  # noqa
 from matching_app.apps.services.create_csv import create_csv, get_rid_of_new_line  # noqa
 from matching_app.apps.services.sqlalchemy_util import convert_query_to_dict_list  # noqa
 from matching_app.apps.controllers.user import UserManager  # noqa
 from matching_app.apps.controllers.keyword import KeywordManager  # noqa
 from matching_app.apps.controllers.tweet import TweetManager  # noqa
+from matching_app.apps.views.auth import Auth  # noqa
+from matching_app.apps.views.post import Post  # noqa
 
 
-class UserInfo(Resource):
-    def get(self):
+class UserInfo(Post, Auth):
+    def post(self):
         try:
+            self.req_init()
             data = self.main()
             return {
                 'status': "true",
@@ -26,20 +28,18 @@ class UserInfo(Resource):
                 'data': {}
             }
 
-    def _get_user_id(self):
-        return request.args.get('user_id')
-
     def main(self):
-        user_id = self._get_user_id()
+        value = self.get_value(["user_id"])
         data = {}
-        if user_id is not None:
-            data = UserManager.get_user_info(user_id)
+        if "user_id" in value:
+            data = UserManager.get_user_info(value["user_id"])
         return data
 
 
-class UserCsv(UserInfo):
-    def get(self):
+class UserCsv(Post, Auth):
+    def post(self):
         try:
+            self.req_init()
             return self.main()
         except Exception as e:
             raise e
@@ -52,7 +52,8 @@ class UserCsv(UserInfo):
         return res
 
     def main(self):
-        user_id = self._get_user_id()
+        value = self.get_value(["user_id"])
+        user_id = value["user_id"]
         row_datas = []
         if user_id is not None:
             tweets = TweetManager.get_tweets(

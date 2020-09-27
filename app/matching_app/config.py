@@ -7,7 +7,7 @@ load_dotenv(dotenv_path)
 
 class Config(object):
     DB_DEBUG = True
-    DB_POOL_RECYCLE=60
+    DB_POOL_RECYCLE = 60
     CLOUD_NUMS = 30
 
     # v2 API
@@ -16,6 +16,14 @@ class Config(object):
     API_KEY = os.environ.get('API_KEY')
     API_SECRET_KEY = os.environ.get('API_SECRET_KEY')
     BEARER_TOKEN = os.environ.get('BEARER_TOKEN')
+
+    # まだログイン機能はつけないので
+    USERNAME = "anonymous"
+    PASSWORD = "password"
+
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
+    # まだログインは機能はつけないので
+    AUTHTOKEN = os.environ.get('AUTHTOKEN')
 
 
 class Development(Config):

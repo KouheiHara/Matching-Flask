@@ -1,13 +1,14 @@
 import traceback
-from flask import request
-from flask_restful import Resource
-from matching_app import app
-from matching_app.apps.controllers.keyword import KeywordManager
+from matching_app import app  # noqa
+from matching_app.apps.controllers.keyword import KeywordManager  # noqa
+from matching_app.apps.views.auth import Auth  # noqa
+from matching_app.apps.views.post import Post  # noqa
 
 
-class KeywordCloud(Resource):
-    def get(self):
+class KeywordCloud(Post, Auth):
+    def post(self):
         try:
+            self.req_init()
             data = self.main()
             return {
                 'status': "true",
@@ -22,11 +23,8 @@ class KeywordCloud(Resource):
                 'data': []
             }
 
-    def _get_user_id(self):
-        return request.args.get('user_id')
-
     def main(self):
-        user_id = self._get_user_id()
+        value = self.get_value(["user_id"])
         km = KeywordManager()
-        data = km.get_and_save_keyword_cloud(user_id)
+        data = km.get_and_save_keyword_cloud(value["user_id"])
         return data

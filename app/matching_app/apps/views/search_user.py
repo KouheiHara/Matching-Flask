@@ -1,13 +1,14 @@
 import traceback
-from flask import request
-from flask_restful import Resource
-from matching_app import app
-from matching_app.apps.controllers.twitter_api import SearchUserTimelineApi
+from matching_app import app  # noqa
+from matching_app.apps.controllers.twitter_api import SearchUserTimelineApi  # noqa
+from matching_app.apps.views.auth import Auth  # noqa
+from matching_app.apps.views.post import Post  # noqa
 
 
-class SearchUser(Resource):
-    def get(self):
+class SearchUser(Post, Auth):
+    def post(self):
         try:
+            self.req_init()
             data = self.main()
             return {
                 'status': "true",
@@ -22,15 +23,10 @@ class SearchUser(Resource):
                 'data': []
             }
 
-    def _get_user_id(self):
-        return request.args.get('user_id'),
-
     def main(self):
-        user_id = self._get_user_id()
+        value = self.get_value(["user_id"])
         data = []
-        if user_id is not None:
+        if "user_id" in value.keys():
             twitter = SearchUserTimelineApi()
-            data = twitter.get_data(user_id)
+            data = twitter.get_data(value["user_id"])
         return data
-
-

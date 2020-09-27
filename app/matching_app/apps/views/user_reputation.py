@@ -1,13 +1,14 @@
 import traceback
-from flask import request
-from flask_restful import Resource
 from matching_app import app  # noqa
 from matching_app.apps.controllers.user import UserManager  # noqa
+from matching_app.apps.views.auth import Auth  # noqa
+from matching_app.apps.views.post import Post  # noqa
 
 
-class CheckLike(Resource):
-    def get(self):
+class CheckLike(Post, Auth):
+    def post(self):
         try:
+            self.req_init()
             self.main()
             return {
                 'status': "true",
@@ -20,14 +21,11 @@ class CheckLike(Resource):
                 'message': "{}".format(e),
             }
 
-    def _get_user_id(self):
-        return (
-            request.args.get('user_id'),
-            bool(int(request.args.get('like'))),
-            bool(int(request.args.get('check')))
-        )
-
     def main(self):
-        user_id, like, check = self._get_user_id()
+        value = self.get_value(["user_id", "like", "check"])
         um = UserManager()
-        um.update_reputation(user_id, like, check)
+        um.update_reputation(
+            value["user_id"],
+            bool(int(value["like"])),
+            bool(int(value["check"]))
+        )
