@@ -10,7 +10,7 @@ import LikeDislikeButton from './likedislike_button';
 class SearchList extends React.Component {
     constructor(props) {
         super(props);
-        this.state={
+        this.state = {
             width: window.innerWidth,
             side_percentage: "10%",
             fontsize: 30,
@@ -22,7 +22,7 @@ class SearchList extends React.Component {
         this.updateDimensions = this.updateDimensions.bind(this)
     }
     updateDimensions() {
-        let side_percentage= "10%"
+        let side_percentage = "10%"
         if (window.innerWidth > MD_SIZE) {
             side_percentage = "20%"
         }
@@ -55,7 +55,7 @@ class SearchList extends React.Component {
                                 <List.Item>
                                     <Col>
                                         <List.Item.Meta
-                                            style={{fontSize: this.state.fontsize}}
+                                            style={{ fontSize: this.state.fontsize }}
                                             avatar={<Avatar src={item["icon_url"]} />}
                                             title={<a href={item["user_url"]} target="_blank" rel='noopener'>{item["user_name"]}</a>}
                                             description={item["user_description"]}
@@ -74,18 +74,17 @@ class SearchList extends React.Component {
                 </Row>
             );
         }
-    } 
+    }
 }
 
 const mapStateToProps = state => ({
     data: state.data,
     hasError: state.getDataError,
     isLoading: state.loadData,
-    listData: state.listData
+    listData: state.listData,
 });
-  
-const mapDispatchToProps= dispatch => ({
-    fetchData: (url) => dispatch(fetchListData(url))
+
+const mapDispatchToProps = dispatch => ({
 });
 
 export default connect(

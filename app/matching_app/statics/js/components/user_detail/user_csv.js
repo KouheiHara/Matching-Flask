@@ -7,9 +7,8 @@ import { fetchListData } from '../../actions/data';
 
 var host = location.protocol + "//" + location.host
 
-
-function get_user_csv_url(keyword) {
-    return `${host}/api/user_csv?user_id=${keyword}`
+function getUserCsvUrl() {
+    return `${host}/api/user_csv`
 }
 
 
@@ -62,7 +61,10 @@ class UserCsv extends React.Component {
     }
     downloadCsv() {
         this.state.loading = true
-        this.props.fetchData(get_user_csv_url(this.props.user_id))
+        this.props.fetchData(
+            getUserCsvUrl(),
+            { "user_id": this.props.user_id }
+        )
     }
     componentDidMount() {
         window.addEventListener('resize', this.eventListenerWidth);
@@ -128,7 +130,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    fetchData: (url) => dispatch(fetchListData(url, 'userCsv', 'blob'))
+    fetchData: (url, obj) => dispatch(fetchListData(url, obj, 'userCsv', 'blob'))
 });
 
 export default connect(

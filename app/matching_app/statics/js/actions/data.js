@@ -1,3 +1,5 @@
+import { isAuthToken, getAuthToken, setAuthToken } from '../components/common/service';
+
 export const getDataError = status => ({
     type: 'GET_DATA_ERROR',
     hasError: status
@@ -11,6 +13,11 @@ export const loadData = status => ({
 export const fetchDataSuccess = data => ({
     type: 'FETCH_DATA_SUCCESS',
     data
+});
+
+export const fetchAuthDataSuccess = authData => ({
+    type: 'FETCH_AUTH_DATA_SUCCESS',
+    authData
 });
 
 export const fetchListDataSuccess = listData => ({
@@ -38,26 +45,59 @@ export const fetchUserCsvSuccess = userCsv => ({
     userCsv
 });
 
+function createFormData(data) {
+    let form = "";
+    Object
+        .keys(data)
+        .forEach(key => (form += `&${key}=${data[key]}`));
+    if (form.length > 0) {
+        form = form.slice(1)
+    }
+    return form;
+}
 
-export const fetchListData = (url, type = "", content = "json") => {
-    let application = 'application/json; charset=UTF-8'
+
+export const setListData = (obj, type) => {
+    return (dispatch) => {
+        if (type === "authData") {
+            dispatch(fetchAuthDataSuccess(obj))
+        }
+    }
+}
+
+
+export const fetchListData = (url, obj, type = "", content = "json") => {
+    let accept = 'application/json; charset=UTF-8'
     let responseType = 'json'
     if (content == 'blob') {
-        application = 'text/csv; charset=UTF-8'
+        accept = 'text/csv; charset=UTF-8'
         responseType = 'blob'
     }
+
     const headers = {
-        'Accept': application,
+        'Accept': accept,
         'Content-Type': 'application/x-www-form-urlencoded'
     };
+    if (type !== "authData") {
+        const token = getAuthToken()
+        headers["Authorization"] = `Bearer ${token}`
+        obj["token"] = token
+        obj["username"] = "anonymous"
+    } else {
+        obj["username"] = "anonymous"
+        obj["password"] = "password"
+    }
+
+    const body = createFormData(obj)
     return (dispatch) => {
         dispatch(loadData(true));
         fetch(url,
             {
-                method: "GET",
+                method: "POST",
+                headers: headers,
+                body: body,
                 mode: 'cors',
                 credentials: 'same-origin',
-                headers: headers,
                 responseType: responseType
             })
             .then((response) => {
@@ -75,7 +115,10 @@ export const fetchListData = (url, type = "", content = "json") => {
                 }
             })
             .then((data) => {
-                if (type === "listData") {
+                if (type === "authData") {
+                    dispatch(fetchAuthDataSuccess(data))
+                    setAuthToken(data.access_token)
+                } else if (type === "listData") {
                     dispatch(fetchListDataSuccess(data))
                 } else if (type === "userData") {
                     dispatch(fetchUserDataSuccess(data))

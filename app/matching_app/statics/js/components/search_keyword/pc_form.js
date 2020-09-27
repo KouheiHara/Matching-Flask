@@ -1,6 +1,6 @@
 import React from 'react';
 import '../../../css/app.scss';
-import { 
+import {
     Row,
     Col,
     Form,
@@ -11,18 +11,18 @@ import { connect } from 'react-redux'
 import { fetchListData } from '../../actions/data';
 
 
-var host = location.protocol+"//"+location.host
+var host = location.protocol + "//" + location.host
 
-function get_search_list_url(keyword) {
-    return `${host}/api/search_list?keyword=${keyword}`
+function getSearchListUrl() {
+    return `${host}/api/search_list`
 }
 
 const layout = {
     labelCol: {
-      span: 8,
+        span: 8,
     },
     wrapperCol: {
-      span: 16,
+        span: 16,
     },
 };
 
@@ -34,7 +34,7 @@ const validateMessages = {
 class PcForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state={
+        this.state = {
             width: window.innerWidth,
             submit: false,
             error: false,
@@ -51,21 +51,24 @@ class PcForm extends React.Component {
     }
     updateDimensions() {
         this.setState({ width: window.innerWidth });
-        if (this.state.width > this.state.max_search_width){
+        if (this.state.width > this.state.max_search_width) {
             this.setState({
                 padding_width: 0,
                 searchtext_width: this.state.max_search_width - this.state.searchbutton_width
             });
         } else {
-            const padding_width = Math.floor(this.state.width*0.1)
+            const padding_width = Math.floor(this.state.width * 0.1)
             this.setState({
                 padding_width: padding_width,
-                searchtext_width:  this.state.width - this.state.searchbutton_width - padding_width*2
+                searchtext_width: this.state.width - this.state.searchbutton_width - padding_width * 2
             });
         }
     }
     onFinish(value) {
-        this.props.fetchData(get_search_list_url(value["search"]["keyword"]), "listData")
+        this.props.fetchData(
+            getSearchListUrl(),
+            { "keyword": value["search"]["keyword"] }
+        )
     }
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions);
@@ -77,7 +80,7 @@ class PcForm extends React.Component {
     render() {
         return (
             <Col span={24} className="form-col">
-                <Form {...layout} 
+                <Form {...layout}
                     name="search-keyword"
                     validateMessages={validateMessages}
                     onFinish={(value) => (this.onFinish(value))}>
@@ -90,23 +93,23 @@ class PcForm extends React.Component {
                                 {
                                     required: true,
                                 },
-                            ]}> 
+                            ]}>
                             <Input className="form-textbot" style={{
                                 fontSize: this.state.fontsize,
-                                width: this.state.searchtext_width+"px",
-                                height: this.state.searchbutton_height+"px"
-                                }}/>
+                                width: this.state.searchtext_width + "px",
+                                height: this.state.searchbutton_height + "px"
+                            }} />
                         </Form.Item>
                         <Form.Item justify="center">
                             <Button
                                 htmlType="submit"
                                 className="form-button"
                                 style={{
-                                    width: this.state.searchbutton_width+"px",
-                                    height: this.state.searchbutton_height+"px"
-                                    }}>
+                                    width: this.state.searchbutton_width + "px",
+                                    height: this.state.searchbutton_height + "px"
+                                }}>
                                 <span className="button-text"
-                                    style={{ 
+                                    style={{
                                         fontSize: this.state.fontsize
                                     }}>
                                     送信
@@ -120,16 +123,16 @@ class PcForm extends React.Component {
     }
 }
 
-  
+
 const mapStateToProps = state => ({
     data: state.data,
     hasError: state.getDataError,
     isLoading: state.loadData,
     listData: state.listData
 });
-  
-const mapDispatchToProps= dispatch => ({
-    fetchData: (url, type) => dispatch(fetchListData(url, type))
+
+const mapDispatchToProps = dispatch => ({
+    fetchData: (url, obj) => dispatch(fetchListData(url, obj, "listData"))
 });
 
 

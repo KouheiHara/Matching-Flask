@@ -5,14 +5,22 @@ import Carousel from 'nuka-carousel';
 import Slide1Img from '../../img/top/slide1_5.png';
 import Slide2Img from '../../img/top/slide2_5.png';
 import SearchForm from './search_keyword/search_form';
-import { fetchListData } from '../actions/data';
+import { fetchListData, setListData } from '../actions/data';
 import Header from './common/header';
 import Footer from './common/footer';
+import { isAuthToken, getAuthToken } from './common/service';
+
+
+var host = location.protocol + "//" + location.host
+
+function getAuthDataUrl() {
+    return `${host}/auth`
+}
 
 class TopSlider extends React.Component {
     constructor(props) {
         super(props);
-        this.state={
+        this.state = {
             width: window.innerWidth,
             defwidth: 1024,
             cellspace: 100,
@@ -28,7 +36,7 @@ class TopSlider extends React.Component {
             })
         } else {
             this.setState({
-                slidewidth: String(this.state.width)+"px"
+                slidewidth: String(this.state.width) + "px"
             })
         }
     };
@@ -62,6 +70,25 @@ class TopSlider extends React.Component {
 class Top extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            access_token: ""
+        }
+        this.authToken = this.authToken.bind(this)
+    }
+    authToken() {
+        const flag = isAuthToken()
+        if (flag) {
+            const token = getAuthToken()
+            this.props.setData({
+                "username": "anonymous",
+                "access_token": token
+            })
+        } else {
+            this.props.fetchData(getAuthDataUrl())
+        }
+    }
+    componentDidMount() {
+        this.authToken()
     }
     render() {
         return (
@@ -78,11 +105,13 @@ class Top extends React.Component {
 const mapStateToProps = state => ({
     data: state.data,
     hasError: state.getDataError,
-    isLoading: state.loadData
+    isLoading: state.loadData,
+    authData: state.authData,
 });
 
-const mapDispatchToProps= dispatch => ({
-    fetchData: (url) => dispatch(fetchListData(url))
+const mapDispatchToProps = dispatch => ({
+    fetchData: (url) => dispatch(fetchListData(url, {}, "authData")),
+    setData: (obj) => dispatch(setListData(obj, "authData"))
 });
 
 export default connect(

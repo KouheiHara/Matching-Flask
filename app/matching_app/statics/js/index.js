@@ -4,16 +4,16 @@ import { Provider } from 'react-redux'
 import configureStore from './store/configureStore';
 import Top from './components/top';
 
-
 const store = configureStore();
+
 
 class Root extends React.Component {
     render() {
         return (
-            <Provider store={ store }>
+            <Provider store={store}>
                 <Top />
             </Provider>
-        );    
+        );
     }
 };
 

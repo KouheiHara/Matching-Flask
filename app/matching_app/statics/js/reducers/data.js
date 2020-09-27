@@ -25,6 +25,15 @@ export const data = (state = [], action) => {
     }
 }
 
+export const authData = (state = [], action) => {
+    switch (action.type) {
+        case 'FETCH_ACTION_DATA_SUCCESS':
+            return action.listData;
+        default:
+            return state;
+    }
+}
+
 export const listData = (state = [], action) => {
     switch (action.type) {
         case 'FETCH_LIST_DATA_SUCCESS':

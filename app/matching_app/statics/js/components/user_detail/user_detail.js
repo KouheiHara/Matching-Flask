@@ -11,16 +11,16 @@ import UserCsv from './user_csv';
 
 var host = location.protocol + "//" + location.host
 
-function get_user_info_url(keyword) {
-    return `${host}/api/user_info?user_id=${keyword}`
+function getUserInfoUrl() {
+    return `${host}/api/user_info`
 }
 
-function get_user_list_url(keyword) {
-    return `${host}/api/search_user?user_id=${keyword}`
+function getUserListUrl() {
+    return `${host}/api/search_user`
 }
 
-function get_keyword_cloud_url(keyword) {
-    return `${host}/api/keyword_cloud?user_id=${keyword}`
+function getKeywordCloudUrl() {
+    return `${host}/api/keyword_cloud`
 }
 
 
@@ -53,8 +53,16 @@ class UserDetail extends React.Component {
         var params = location.pathname.split('/')
         var user_id = params[2].split("?")[0]
         this.setState({ user_id: user_id })
-        this.props.fetchData(get_user_info_url(user_id), "userInfo")
-        this.props.fetchData(get_user_list_url(user_id), "userData")
+        this.props.fetchData(
+            getUserInfoUrl(),
+            { "user_id": user_id },
+            "userInfo"
+        )
+        this.props.fetchData(
+            getUserListUrl(),
+            { "user_id": user_id },
+            "userData"
+        )
     }
     eventListenerWidth() {
         if (this.state.lastwidth != window.innerWidth) {
@@ -75,7 +83,11 @@ class UserDetail extends React.Component {
     render() {
         if (this.props.userData.data && !this.state.initLoading) {
             this.state.initLoading = true
-            this.props.fetchData(get_keyword_cloud_url(this.state.user_id), "keywordCloud")
+            this.props.fetchData(
+                getKeywordCloudUrl(),
+                { "user_id": this.state.user_id },
+                "keywordCloud"
+            )
         }
         return (
             <Row>
@@ -97,7 +109,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    fetchData: (url, type) => dispatch(fetchListData(url, type)),
+    fetchData: (url, obj, type) => dispatch(fetchListData(url, obj, type)),
 });
 
 export default connect(

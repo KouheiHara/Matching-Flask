@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from 'antd'; 
+import { Typography } from 'antd';
 import { XS_SIZE, MD_SIZE } from './config';
 const { Title } = Typography;
 
@@ -19,10 +19,28 @@ export function CustomTitle(keys) {
 
 export function CustomChar(keys) {
     if (keys["window_size"] < XS_SIZE) {
-        return <p style={{fontSize:18}} {...keys}>{keys["text"]}</p>
+        return <p style={{ fontSize: 18 }} {...keys}>{keys["text"]}</p>
     } else if (keys["window_size"] < MD_SIZE) {
-        return <p style={{fontSize:22}} {...keys}>{keys["text"]}</p>
+        return <p style={{ fontSize: 22 }} {...keys}>{keys["text"]}</p>
     } else {
-        return <p style={{fontSize:25}} {...keys}>{keys["text"]}</p>
+        return <p style={{ fontSize: 25 }} {...keys}>{keys["text"]}</p>
     }
+}
+
+export function setAuthToken(token) {
+    localStorage.setItem('auth-token', token);
+}
+
+export function isAuthToken() {
+    var token = localStorage.getItem("auth-token");
+    if (token) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+export function getAuthToken() {
+    var token = localStorage.getItem("auth-token");
+    return token;
 }

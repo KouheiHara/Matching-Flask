@@ -7,13 +7,15 @@ import User from './components/user';
 
 const store = configureStore();
 
+
+
 class Root extends React.Component {
     render() {
         return (
-            <Provider store={ store }>
+            <Provider store={store}>
                 <User />
             </Provider>
-        );    
+        );
     }
 };
 
