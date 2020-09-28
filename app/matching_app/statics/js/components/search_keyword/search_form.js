@@ -51,60 +51,35 @@ class SearchForm extends React.Component {
         window.removeEventListener('resize', this.updateDimensions);
     }
     render() {
-        // console.log(this.props.authData)
-        // if (this.props.authData.access_token) {
-        if (true) {
-            if (this.state.width < MD_SIZE) {
-                return (
-                    <Col>
-                        <Row className="gutter128">
-                            <Col className="form-col" span={24}>
-                                <KeywordIcon />
-                            </Col>
-                            <MobileForm />
-                        </Row>
-                        <Row className="gutter0128">
-                            <p style={{
-                                fontSize: this.state.fontSize,
-                                paddingLeft: this.state.padding_width,
-                                paddingRight: this.state.padding_width
-                            }}>
-                                {keyword_text}
-                            </p>
-                        </Row>
-                        <SearchList />
-                    </Col>
-                );
-            } else {
-                return (
-                    <Col>
-                        <Row className="gutter128">
-                            <Col className="form-col" span={24}>
-                                <KeywordIcon padding_width={this.state.padding_width} />
-                            </Col>
-                            <PcForm />
-                        </Row>
-                        <Row className="gutter0128 form-col">
-                            <p style={{
-                                fontSize: this.state.fontSize,
-                                paddingLeft: this.state.padding_width,
-                                paddingRight: this.state.padding_width
-                            }}>
-                                {keyword_text}
-                            </p>
-                        </Row>
-                        <SearchList />
-                    </Col>
-                );
-            }
-        }
-        else {
+        if (this.state.width < MD_SIZE) {
+            return (
+                <Col>
+                    <Row className="gutter128">
+                        <Col className="form-col" span={24}>
+                            <KeywordIcon />
+                        </Col>
+                        <MobileForm />
+                    </Row>
+                    <Row className="gutter0128">
+                        <p style={{
+                            fontSize: this.state.fontSize,
+                            paddingLeft: this.state.padding_width,
+                            paddingRight: this.state.padding_width
+                        }}>
+                            {keyword_text}
+                        </p>
+                    </Row>
+                    <SearchList />
+                </Col>
+            );
+        } else {
             return (
                 <Col>
                     <Row className="gutter128">
                         <Col className="form-col" span={24}>
                             <KeywordIcon padding_width={this.state.padding_width} />
                         </Col>
+                        <PcForm />
                     </Row>
                     <Row className="gutter0128 form-col">
                         <p style={{
@@ -115,6 +90,7 @@ class SearchForm extends React.Component {
                             {keyword_text}
                         </p>
                     </Row>
+                    <SearchList />
                 </Col>
             );
         }
