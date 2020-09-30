@@ -1,16 +1,19 @@
 import React from 'react';
 import '../../../css/app.scss';
-import { Row, Col } from 'antd';
+import { Row, Col, Radio } from 'antd';
 import { MD_SIZE } from './../common/config';
 import KeywordIconImg from '../../../img/search/keyword.svg';
 import { connect } from 'react-redux'
 import { fetchListData } from '../../actions/data';
 import SearchList from './search_list';
+import UserList from './user_list';
 import MobileForm from './mobile_form';
 import PcForm from './pc_form';
 
 
-const keyword_text = "直近でキーワードに関係する投稿をした人を表示します。"
+const search_text = "直近でキーワードに関係する投稿をした人を表示します。"
+const user_text = "直近で投稿したユーザで一致した人を表示します。"
+
 
 function KeywordIcon() {
     return <img
@@ -23,6 +26,26 @@ function KeywordIcon() {
     />
 }
 
+function KeywordList(key) {
+    if (key['search_type'] == "keyword") {
+        return <SearchList />
+    } else if (key['search_type'] == "user_id") {
+        return <UserList />
+    } else {
+        return <></>
+    }
+}
+
+function KeywordText(key) {
+    if (key['search_type'] == "keyword") {
+        return <>{search_text}</>
+    } else if (key['search_type'] == "user_id") {
+        return <>{user_text}</>
+    } else {
+        return <></>
+    }
+}
+
 
 class SearchForm extends React.Component {
     constructor(props) {
@@ -33,9 +56,20 @@ class SearchForm extends React.Component {
             error: false,
             loading: false,
             fontSize: 30,
-            padding_width: 20
+            padding_width: 20,
+            search_type_value: 1,
+            search_types: {
+                1: "keyword",
+                2: "user_id"
+            }
         }
         this.updateDimensions = this.updateDimensions.bind(this)
+        this.onChangeSearchType = this.onChangeSearchType.bind(this)
+    }
+    onChangeSearchType(e) {
+        this.setState({
+            search_type_value: e.target.value,
+        });
     }
     updateDimensions() {
         this.setState({
@@ -58,7 +92,17 @@ class SearchForm extends React.Component {
                         <Col className="form-col" span={24}>
                             <KeywordIcon />
                         </Col>
-                        <MobileForm />
+                        <Col className="form-col" span={24}>
+                            <Radio.Group
+                                size={"large"}
+                                style={{ marginTop: 16, marginBottom: 16 }}
+                                onChange={this.onChangeSearchType}
+                                value={this.state.search_type_value}>
+                                <Radio.Button value={1}><span className="radiolabel">検索ワード</span></Radio.Button>
+                                <Radio.Button value={2}><span className="radiolabel">ユーザID</span></Radio.Button>
+                            </Radio.Group>
+                        </Col>
+                        <MobileForm search_type={this.state.search_types[this.state.search_type_value]} />
                     </Row>
                     <Row className="gutter0128">
                         <p style={{
@@ -66,11 +110,11 @@ class SearchForm extends React.Component {
                             paddingLeft: this.state.padding_width,
                             paddingRight: this.state.padding_width
                         }}>
-                            {keyword_text}
+                            <KeywordText search_type={this.state.search_types[this.state.search_type_value]} />
                         </p>
                     </Row>
-                    <SearchList />
-                </Col>
+                    <KeywordList search_type={this.state.search_types[this.state.search_type_value]} />
+                </Col >
             );
         } else {
             return (
@@ -79,7 +123,17 @@ class SearchForm extends React.Component {
                         <Col className="form-col" span={24}>
                             <KeywordIcon padding_width={this.state.padding_width} />
                         </Col>
-                        <PcForm />
+                        <Col className="form-col" span={24}>
+                            <Radio.Group
+                                size={"large"}
+                                style={{ marginTop: 16, marginBottom: 16 }}
+                                onChange={this.onChangeSearchType}
+                                value={this.state.search_type_value}>
+                                <Radio.Button value={1}><span className="radiolabel">検索ワード</span></Radio.Button>
+                                <Radio.Button value={2}><span className="radiolabel">ユーザID</span></Radio.Button>
+                            </Radio.Group>
+                        </Col>
+                        <PcForm search_type={this.state.search_types[this.state.search_type_value]} />
                     </Row>
                     <Row className="gutter0128 form-col">
                         <p style={{
@@ -87,10 +141,10 @@ class SearchForm extends React.Component {
                             paddingLeft: this.state.padding_width,
                             paddingRight: this.state.padding_width
                         }}>
-                            {keyword_text}
+                            <KeywordText search_type={this.state.search_types[this.state.search_type_value]} />
                         </p>
                     </Row>
-                    <SearchList />
+                    <KeywordList search_type={this.state.search_types[this.state.search_type_value]} />
                 </Col>
             );
         }

@@ -187,3 +187,78 @@ class SearchUserTimelineApi(TwitterApiManager, TwitterManager):
             }
             datas.append(data)
         return datas
+
+
+class UserSearchApi(TwitterApiManager, TwitterManager):
+    SEARCH_URL = 'https://api.twitter.com/1.1/users/search.json'
+
+    def __init__(self) -> None:
+        self.__params = {
+            "q": "",
+            "count": 20,
+        }
+
+    @property
+    def params(self):
+        return self.__params
+
+    def _oauth_v1(self) -> None:
+        return super()._oauth_v1()
+
+    def _request(self, url: str, params: str) -> dict:
+        self._oauth_v1()
+        return super()._request(url, params)
+
+    def get_data(self, user_id: str) -> list:
+        url = self.SEARCH_URL
+        self.__params["q"] = user_id
+        data = self._request(url, self.__params)
+        ex_data = self._extract_tweets(data)
+        return self._save_and_refer_data(ex_data)
+
+    def _save_and_refer_data(self, datas: list) -> list:
+        users = UserManager.get_all_user()
+
+        user_ids = [user.twitter_user_id for user in users]
+        new_datas = []
+        new_datas_user_id = []
+        save_datas = []
+        for data in datas:
+            if data["user_id"] in new_datas_user_id:
+                continue
+
+            if data["user_id"] in user_ids:
+                index = user_ids.index(data["user_id"])
+                data["like"] = users[index].like
+                data["dislike"] = users[index].dislike
+            else:
+                save_datas.append(
+                    User(
+                        twitter_user_id=data["user_id"],
+                        twitter_user_name=data["user_name"],
+                        icon_url=data["icon_url"]
+                    )
+                )
+            new_datas.append(data)
+            new_datas_user_id.append(data["user_id"])
+
+        if len(save_datas) > 0:
+            um = UserManager()
+            um.save_users(save_datas)
+
+        return new_datas
+
+    def _extract_tweets(self, res: dict) -> list:
+        datas = []
+        for line in res:
+            data = {
+                "user_id": line["screen_name"],
+                "user_name": line["name"],
+                "user_description": line["description"],
+                "user_url":  self.get_user_url(line["screen_name"]),
+                "icon_url": line["profile_image_url_https"],
+                "like": 0,
+                "dislike": 0,
+            }
+            datas.append(data)
+        return datas

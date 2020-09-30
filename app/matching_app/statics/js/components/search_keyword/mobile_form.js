@@ -16,6 +16,10 @@ function getSearchListUrl() {
     return `${host}/api/search_list`
 }
 
+function getUserListUrl() {
+    return `${host}/api/user_list`
+}
+
 const layout = {
     labelCol: {
         span: 8,
@@ -60,10 +64,19 @@ class MobileForm extends React.Component {
         });
     }
     onFinish(value) {
-        this.props.fetchData(
-            getSearchListUrl(),
-            { "keyword": value["search"]["keyword"] }
-        )
+        if (this.props.search_type == "keyword") {
+            this.props.fetchData(
+                getSearchListUrl(),
+                { "keyword": value["search"]["keyword"] },
+                "listData"
+            )
+        } else {
+            this.props.fetchData(
+                getUserListUrl(),
+                { "user_id": value["search"]["keyword"] },
+                "userList"
+            )
+        }
     }
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions);
@@ -124,7 +137,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    fetchData: (url, obj) => dispatch(fetchListData(url, obj, "listData")),
+    fetchData: (url, obj, type) => dispatch(fetchListData(url, obj, type)),
 });
 
 

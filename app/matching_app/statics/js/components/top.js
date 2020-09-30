@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import '../../css/app.scss';
 import Carousel from 'nuka-carousel';
+import { Tabs, Radio } from 'antd';
 import Slide1Img from '../../img/top/slide1_5.png';
 import Slide2Img from '../../img/top/slide2_5.png';
 import SearchForm from './search_keyword/search_form';
@@ -11,11 +12,49 @@ import Footer from './common/footer';
 import { isAuthToken, getAuthToken } from './common/service';
 
 
+const { TabPane } = Tabs;
+
+
 var host = location.protocol + "//" + location.host
 
 function getAuthDataUrl() {
     return `${host}/auth`
 }
+
+
+// class SlidingTabs extends React.Component {
+//     constructor(props) {
+//         super(props);
+//         this.state = {
+//             mode: 'person',//keyword, person
+//         };
+//     }
+
+//     handleModeChange = e => {
+//       const mode = e.target.value;
+//       this.setState({ mode });
+//     };
+
+//     render() {
+//       const { mode } = this.state;
+//       return (
+//         <div>
+//           <Radio.Group onChange={this.handleModeChange} value={mode} style={{ marginBottom: 8 }}>
+//             <Radio.Button value="top">Horizontal</Radio.Button>
+//             <Radio.Button value="left">Vertical</Radio.Button>
+//           </Radio.Group>
+//           <Tabs defaultActiveKey="1" tabPosition={mode} style={{ height: 220 }}>
+//             {[...Array.from({ length: 30 }, (v, i) => i)].map(i => (
+//               <TabPane tab={`Tab-${i}`} key={i} disabled={i === 28}>
+//                 Content of tab {i}
+//               </TabPane>
+//             ))}
+//           </Tabs>
+//         </div>
+//       );
+//     }
+// }
+
 
 class TopSlider extends React.Component {
     constructor(props) {

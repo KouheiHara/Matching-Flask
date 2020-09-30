@@ -25,6 +25,11 @@ export const fetchListDataSuccess = listData => ({
     listData
 });
 
+export const fetchUserListSuccess = userList => ({
+    type: 'FETCH_USER_LIST_SUCCESS',
+    userList
+});
+
 export const fetchUserDataSuccess = userData => ({
     type: 'FETCH_USER_DATA_SUCCESS',
     userData
@@ -120,6 +125,8 @@ export const fetchListData = (url, obj, type = "", content = "json") => {
                     setAuthToken(data.access_token)
                 } else if (type === "listData") {
                     dispatch(fetchListDataSuccess(data))
+                } else if (type === "userList") {
+                    dispatch(fetchUserListSuccess(data))
                 } else if (type === "userData") {
                     dispatch(fetchUserDataSuccess(data))
                 } else if (type === "keywordCloud") {

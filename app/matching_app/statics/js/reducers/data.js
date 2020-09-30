@@ -43,6 +43,15 @@ export const listData = (state = [], action) => {
     }
 }
 
+export const userList = (state = [], action) => {
+    switch (action.type) {
+        case 'FETCH_USER_LIST_SUCCESS':
+            return action.userList;
+        default:
+            return state;
+    }
+}
+
 export const userData = (state = [], action) => {
     switch (action.type) {
         case 'FETCH_USER_DATA_SUCCESS':
