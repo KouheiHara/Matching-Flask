@@ -17,6 +17,8 @@ function getAuthDataUrl() {
     return `${host}/auth`
 }
 
+const { Content } = Layout;
+
 
 class User extends React.Component {
     constructor(props) {
@@ -52,11 +54,11 @@ class User extends React.Component {
             return (
                 <Layout>
                     <MenuSider />
-                    <div>
+                    <Content>
                         <Header />
                         <UserDetail />
                         <Footer />
-                    </div>
+                    </Content>
                 </Layout>
             );
         } else {

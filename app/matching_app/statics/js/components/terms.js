@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Layout } from 'antd';
 import '../../css/app.scss';
-import Content from './terms/content';
+import TermsContent from './terms/content';
 import Header from './common/header';
 import Footer from './common/footer';
 import MenuSider from './common/sider';
@@ -15,6 +15,8 @@ var host = location.protocol + "//" + location.host
 function getAuthDataUrl() {
     return `${host}/auth`
 }
+
+const { Content } = Layout;
 
 
 class Terms extends React.Component {
@@ -51,18 +53,18 @@ class Terms extends React.Component {
             return (
                 <Layout>
                     <MenuSider />
-                    <div>
+                    <Content>
                         <Header />
-                        <Content />
+                        <TermsContent />
                         <Footer />
-                    </div>
+                    </Content>
                 </Layout>
             );
         } else {
             return (
                 <Layout>
                     <Header />
-                    <Content />
+                    <TermsContent />
                     <Footer />
                 </Layout>
             );

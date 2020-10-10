@@ -20,6 +20,8 @@ function getAuthDataUrl() {
     return `${host}/auth`
 }
 
+const { Content } = Layout;
+
 
 class TopSlider extends React.Component {
     constructor(props) {
@@ -27,8 +29,8 @@ class TopSlider extends React.Component {
         this.state = {
             width: window.innerWidth,
             defwidth: 1024,
-            cellspace: 100,
-            slidewidth: "1024px"
+            cellspace: 0,
+            slidewidth: String(window.innerWidth) + "px"
         }
         this.updateDimensions = this.updateDimensions.bind(this)
     }
@@ -36,10 +38,12 @@ class TopSlider extends React.Component {
         this.setState({ width: window.innerWidth });
         if (this.state.width > this.state.defwidth) {
             this.setState({
-                cellspace: this.state.width - this.state.defwidth
+                cellspace: this.state.width - this.state.defwidth,
+                slideWidth: "1024px"
             })
         } else {
             this.setState({
+                cellspace: 0,
                 slidewidth: String(this.state.width) + "px"
             })
         }
@@ -49,24 +53,43 @@ class TopSlider extends React.Component {
         this.updateDimensions()
     }
     render() {
-        return (
-            <Carousel
-                slidesToShow={1}
-                autoplay={true}
-                cellAlign={"center"}
-                wrapAround={true}
-                dragging={true}
-                cellSpacing={this.state.cellspace}
-                slideWidth={this.state.slidewidth}
-                //width="1024px"
-                speed={750}
-                className="gutter128"
-                style={{ textAlign: "center" }}
-            >
-                <img id="slideimg1" className="" src={Slide1Img} alt="スライド1" />
-                <img id="slideimg2" className="" src={Slide2Img} alt="スライド2" />
-            </Carousel>
-        );
+        if (this.state.width > 1024) {
+            return (
+                <Carousel
+                    slidesToShow={1}
+                    autoplay={true}
+                    cellAlign={"center"}
+                    wrapAround={true}
+                    dragging={true}
+                    cellSpacing={this.state.cellspace}
+                    slideWidth={this.state.slidewidth}
+                    speed={750}
+                    className="gutter128"
+                    style={{ textAlign: "center" }}
+                >
+                    <img id="slideimg1" className="" src={Slide1Img} alt="スライド1" />
+                    <img id="slideimg2" className="" src={Slide2Img} alt="スライド2" />
+                </Carousel>
+            );
+        } else {
+            return (
+                <Carousel
+                    slidesToShow={1}
+                    autoplay={true}
+                    cellAlign={"left"}
+                    wrapAround={true}
+                    dragging={true}
+                    cellSpacing={this.state.cellspace}
+                    slideWidth={this.state.slidewidth}
+                    speed={750}
+                    className="gutter128"
+                    style={{ textAlign: "center" }}
+                >
+                    <img id="slideimg1" className="" src={Slide1Img} alt="スライド1" />
+                    <img id="slideimg2" className="" src={Slide2Img} alt="スライド2" />
+                </Carousel>
+            );
+        }
     }
 }
 
@@ -105,23 +128,21 @@ class Top extends React.Component {
             return (
                 <Layout>
                     <MenuSider />
-                    <div>
+                    <Content>
                         <Header />
                         <TopSlider />
                         <SearchForm />
                         <Footer />
-                    </div>
+                    </Content>
                 </Layout>
             );
         } else {
             return (
                 <Layout>
-                    <div>
-                        <Header />
-                        <TopSlider />
-                        <SearchForm />
-                        <Footer />
-                    </div>
+                    <Header />
+                    <TopSlider />
+                    <SearchForm />
+                    <Footer />
                 </Layout>
             );
         }

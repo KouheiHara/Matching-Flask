@@ -50,7 +50,7 @@ class MenuSider extends React.Component {
                     style={{
                         backgroundColor: '#f0f8ff', color: "#000000"
                     }}
-                    defaultSelectedKeys={[this.state.current]}>
+                    selectedKeys={[this.state.current]}>
                     <Menu.Item key="/" icon={<AreaChartOutlined style={{ fontSize: '25px' }} />} onClick={(e) => { this.handleClick(e) }}>
                         トップ
                     </Menu.Item>

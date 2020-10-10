@@ -8,7 +8,7 @@ import {
 import { connect } from 'react-redux'
 
 
-class Content extends React.Component {
+class TermsContent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -119,5 +119,5 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Content)
+)(TermsContent)
 

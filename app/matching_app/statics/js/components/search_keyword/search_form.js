@@ -47,6 +47,63 @@ function KeywordText(key) {
 }
 
 
+class RadioButton extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            width: window.innerWidth,
+            search_type_value: 1,
+        }
+        this.updateDimensions = this.updateDimensions.bind(this)
+        this.onChangeSearchType = this.onChangeSearchType.bind(this)
+    }
+    updateDimensions() {
+        this.setState({
+            width: window.innerWidth,
+        });
+    }
+    onChangeSearchType(e) {
+        this.setState({
+            search_type_value: e.target.value,
+        });
+        this.props.onChangeSearchTypeParent(e.target.value)
+    }
+    componentDidMount() {
+        window.addEventListener('resize', this.updateDimensions);
+        this.updateDimensions()
+    }
+    render() {
+        if (this.state.width > 320) {
+            return (
+                <Col className="form-col" span={24}>
+                    <Radio.Group
+                        size={"large"}
+                        style={{ marginTop: 16, marginBottom: 16 }}
+                        onChange={this.onChangeSearchType}
+                        value={this.state.search_type_value}>
+                        <Radio.Button value={1}><span className="radiolabel">検索ワード</span></Radio.Button>
+                        <Radio.Button value={2}><span className="radiolabel">ユーザID</span></Radio.Button>
+                    </Radio.Group>
+                </Col>
+            )
+        } else {
+            return (
+                <Row style={{ textAlign: "center" }} span={24}>
+                    <Radio.Group
+                        size={"large"}
+                        style={{ marginTop: 16, marginBottom: 16 }}
+                        onChange={this.onChangeSearchType}
+                        value={this.state.search_type_value}>
+                        <Radio.Button value={1}><span className="radiolabel">検索ワード</span></Radio.Button>
+                        <Radio.Button value={2}><span className="radiolabel">ユーザID</span></Radio.Button>
+                    </Radio.Group>
+                </Row>
+            )
+        }
+    }
+}
+
+
 class SearchForm extends React.Component {
     constructor(props) {
         super(props);
@@ -64,11 +121,11 @@ class SearchForm extends React.Component {
             }
         }
         this.updateDimensions = this.updateDimensions.bind(this)
-        this.onChangeSearchType = this.onChangeSearchType.bind(this)
+        this.onChangeSearchTypeParent = this.onChangeSearchTypeParent.bind(this)
     }
-    onChangeSearchType(e) {
+    onChangeSearchTypeParent(value) {
         this.setState({
-            search_type_value: e.target.value,
+            search_type_value: value,
         });
     }
     updateDimensions() {
@@ -92,16 +149,7 @@ class SearchForm extends React.Component {
                         <Col className="form-col" span={24}>
                             <KeywordIcon />
                         </Col>
-                        <Col className="form-col" span={24}>
-                            <Radio.Group
-                                size={"large"}
-                                style={{ marginTop: 16, marginBottom: 16 }}
-                                onChange={this.onChangeSearchType}
-                                value={this.state.search_type_value}>
-                                <Radio.Button value={1}><span className="radiolabel">検索ワード</span></Radio.Button>
-                                <Radio.Button value={2}><span className="radiolabel">ユーザID</span></Radio.Button>
-                            </Radio.Group>
-                        </Col>
+                        <RadioButton onChangeSearchTypeParent={(value) => { this.onChangeSearchTypeParent(value) }} />
                         <MobileForm search_type={this.state.search_types[this.state.search_type_value]} />
                     </Row>
                     <Row className="gutter0128">
@@ -123,16 +171,7 @@ class SearchForm extends React.Component {
                         <Col className="form-col" span={24}>
                             <KeywordIcon padding_width={this.state.padding_width} />
                         </Col>
-                        <Col className="form-col" span={24}>
-                            <Radio.Group
-                                size={"large"}
-                                style={{ marginTop: 16, marginBottom: 16 }}
-                                onChange={this.onChangeSearchType}
-                                value={this.state.search_type_value}>
-                                <Radio.Button value={1}><span className="radiolabel">検索ワード</span></Radio.Button>
-                                <Radio.Button value={2}><span className="radiolabel">ユーザID</span></Radio.Button>
-                            </Radio.Group>
-                        </Col>
+                        <RadioButton onChangeSearchTypeParent={(value) => { this.onChangeSearchTypeParent(value) }} />
                         <PcForm search_type={this.state.search_types[this.state.search_type_value]} />
                     </Row>
                     <Row className="gutter0128 form-col">
