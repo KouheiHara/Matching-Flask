@@ -2,14 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Layout } from 'antd';
 import '../../css/app.scss';
-import UserDetail from './user_detail/user_detail';
-import { fetchListData, setListData } from '../actions/data';
+import Content from './terms/content';
 import Header from './common/header';
 import Footer from './common/footer';
 import MenuSider from './common/sider';
+import { fetchListData, setListData } from '../actions/data';
 import { isAuthToken, getAuthToken } from './common/service';
 import { MD_SIZE } from './common/config';
-
 
 var host = location.protocol + "//" + location.host
 
@@ -18,7 +17,7 @@ function getAuthDataUrl() {
 }
 
 
-class User extends React.Component {
+class Terms extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -54,7 +53,7 @@ class User extends React.Component {
                     <MenuSider />
                     <div>
                         <Header />
-                        <UserDetail />
+                        <Content />
                         <Footer />
                     </div>
                 </Layout>
@@ -63,7 +62,7 @@ class User extends React.Component {
             return (
                 <Layout>
                     <Header />
-                    <UserDetail />
+                    <Content />
                     <Footer />
                 </Layout>
             );
@@ -74,7 +73,8 @@ class User extends React.Component {
 const mapStateToProps = state => ({
     data: state.data,
     hasError: state.getDataError,
-    isLoading: state.loadData
+    isLoading: state.loadData,
+    authData: state.authData,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -85,4 +85,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(User)
+)(Terms)

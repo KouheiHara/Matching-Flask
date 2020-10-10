@@ -9,6 +9,11 @@ def index():
     return render_template("index.html")
 
 
+@app.route('/terms')
+def terms():
+    return render_template("terms.html")
+
+
 @app.route('/user/<user_id>')
 def user(user_id):
     return render_template("user.html")

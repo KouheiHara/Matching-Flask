@@ -27,6 +27,7 @@ class SearchList(Post, Auth):
         value = self.get_value(["keyword"])
         data = []
         if "keyword" in value.keys():
-            twitter = SearchTweetApi()
-            data = twitter.get_data(value["keyword"])
+            #twitter = SearchTweetApi()
+            #data = twitter.get_data(value["keyword"])
+            data = [{"keyword": test}]
         return data

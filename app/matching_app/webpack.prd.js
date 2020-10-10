@@ -3,7 +3,7 @@
 require('@babel/register'); // development.jsでES6を使えるようにする
 var webpack = require('webpack');
 var path = require('path');
-var NODE_ENV="production";
+var NODE_ENV = "production";
 
 var config = {
     mode: NODE_ENV,
@@ -11,6 +11,7 @@ var config = {
     entry: {
         index: path.resolve(__dirname, 'statics/js') + '/index.js',
         user: path.resolve(__dirname, 'statics/js') + '/user.js',
+        terms: path.resolve(__dirname, 'statics/js') + '/terms.js',
     },
     output: {
         path: path.resolve(__dirname, 'public/js'),
@@ -26,8 +27,8 @@ var config = {
                     loader: 'babel-loader',
                     options: {
                         presets: [
-                          '@babel/preset-env',
-                          '@babel/preset-react'
+                            '@babel/preset-env',
+                            '@babel/preset-react'
                         ],
                         plugins: ['@babel/plugin-syntax-jsx']
                     }
@@ -59,7 +60,7 @@ var config = {
     },
     plugins: [
         new webpack.DefinePlugin({
-          'process.env.NODE_ENV': JSON.stringify(NODE_ENV)
+            'process.env.NODE_ENV': JSON.stringify(NODE_ENV)
         }),
         new webpack.optimize.OccurrenceOrderPlugin(),
     ],

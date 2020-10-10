@@ -1,18 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux'
+import { Layout } from 'antd';
 import '../../css/app.scss';
 import Carousel from 'nuka-carousel';
-import { Tabs, Radio } from 'antd';
 import Slide1Img from '../../img/top/slide1_5.png';
 import Slide2Img from '../../img/top/slide2_5.png';
 import SearchForm from './search_keyword/search_form';
 import { fetchListData, setListData } from '../actions/data';
 import Header from './common/header';
 import Footer from './common/footer';
+import MenuSider from './common/sider';
 import { isAuthToken, getAuthToken } from './common/service';
-
-
-const { TabPane } = Tabs;
+import { MD_SIZE } from './common/config';
 
 
 var host = location.protocol + "//" + location.host
@@ -20,40 +19,6 @@ var host = location.protocol + "//" + location.host
 function getAuthDataUrl() {
     return `${host}/auth`
 }
-
-
-// class SlidingTabs extends React.Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             mode: 'person',//keyword, person
-//         };
-//     }
-
-//     handleModeChange = e => {
-//       const mode = e.target.value;
-//       this.setState({ mode });
-//     };
-
-//     render() {
-//       const { mode } = this.state;
-//       return (
-//         <div>
-//           <Radio.Group onChange={this.handleModeChange} value={mode} style={{ marginBottom: 8 }}>
-//             <Radio.Button value="top">Horizontal</Radio.Button>
-//             <Radio.Button value="left">Vertical</Radio.Button>
-//           </Radio.Group>
-//           <Tabs defaultActiveKey="1" tabPosition={mode} style={{ height: 220 }}>
-//             {[...Array.from({ length: 30 }, (v, i) => i)].map(i => (
-//               <TabPane tab={`Tab-${i}`} key={i} disabled={i === 28}>
-//                 Content of tab {i}
-//               </TabPane>
-//             ))}
-//           </Tabs>
-//         </div>
-//       );
-//     }
-// }
 
 
 class TopSlider extends React.Component {
@@ -110,10 +75,15 @@ class Top extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            width: window.innerWidth,
             access_token: ""
         }
         this.authToken = this.authToken.bind(this)
+        this.updateDimensions = this.updateDimensions.bind(this)
     }
+    updateDimensions() {
+        this.setState({ width: window.innerWidth })
+    };
     authToken() {
         const flag = isAuthToken()
         if (flag) {
@@ -128,16 +98,33 @@ class Top extends React.Component {
     }
     componentDidMount() {
         this.authToken()
+        window.addEventListener('resize', this.updateDimensions)
     }
     render() {
-        return (
-            <div>
-                <Header />
-                <TopSlider />
-                <SearchForm />
-                <Footer />
-            </div>
-        );
+        if (this.state.width <= MD_SIZE) {
+            return (
+                <Layout>
+                    <MenuSider />
+                    <div>
+                        <Header />
+                        <TopSlider />
+                        <SearchForm />
+                        <Footer />
+                    </div>
+                </Layout>
+            );
+        } else {
+            return (
+                <Layout>
+                    <div>
+                        <Header />
+                        <TopSlider />
+                        <SearchForm />
+                        <Footer />
+                    </div>
+                </Layout>
+            );
+        }
     }
 }
 
