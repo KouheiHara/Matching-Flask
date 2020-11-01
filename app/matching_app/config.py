@@ -25,6 +25,8 @@ class Config(object):
     # まだログインは機能はつけないので
     AUTHTOKEN = os.environ.get('AUTHTOKEN')
 
+    YOUTUBE_API_KEY = os.environ.get('YOUTUBE_API_KEY')
+
 
 class Development(Config):
     LOG_LEVEL = 'DEBUG'

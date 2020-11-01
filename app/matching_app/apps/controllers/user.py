@@ -1,4 +1,5 @@
 from matching_app.apps.models.db import *  # noqa
+from matching_app.apps.models.twitter import *  # noqa
 from matching_app.apps.controllers.twitter import TwitterManager  # noqa
 
 

@@ -1,11 +1,11 @@
 import traceback
 from matching_app import app  # noqa
-from matching_app.apps.controllers.keyword import KeywordManager  # noqa
-from matching_app.apps.views.auth import Auth  # noqa
-from matching_app.apps.views.post import Post  # noqa
+from matching_app.apps.controllers.twitter_api import UserSearchApi  # noqa
+from matching_app.apps.controllers.apis.auth import Auth  # noqa
+from matching_app.apps.controllers.apis.post import Post  # noqa
 
 
-class KeywordCloud(Post, Auth):
+class UserList(Post, Auth):
     def post(self):
         try:
             self.req_init()
@@ -25,6 +25,8 @@ class KeywordCloud(Post, Auth):
 
     def main(self):
         value = self.get_value(["user_id"])
-        km = KeywordManager()
-        data = km.get_and_save_keyword_cloud(value["user_id"])
+        data = []
+        if "user_id" in value.keys():
+            twitter = UserSearchApi()
+            data = twitter.get_data(value["user_id"])
         return data

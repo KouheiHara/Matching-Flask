@@ -6,6 +6,7 @@ from requests_oauthlib import OAuth1Session
 from matching_app import app  # noqa
 from matching_app.apps.common.error import *  # noqa
 from matching_app.apps.models.db import *  # noqa
+from matching_app.apps.models.twitter import *  # noqa
 from matching_app.apps.controllers.twitter import TwitterManager  # noqa
 from matching_app.apps.controllers.user import UserManager  # noqa
 from matching_app.apps.controllers.tweet import TweetManager  # noqa
@@ -23,12 +24,12 @@ class TwitterApiManager(metaclass=ABCMeta):
 
     @abstractmethod
     def _request(self, url: str, params: dict) -> dict:
-        req = self.twitter.get(url, params=params)
-        if req.status_code == 200:
-            res = json.loads(req.text)
+        res = self.twitter.get(url, params=params)
+        if res.status_code == 200:
+            res = json.loads(res.text)
             return res
         else:
-            raise APIError("APIの接続エラー {}".format(req.text))
+            raise APIError("APIの接続エラー {}".format(res.text))
 
     @abstractmethod
     def get_data(self) -> None:

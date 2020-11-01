@@ -1,11 +1,11 @@
 from matching_app.app import api, app  # noqa
-#import matching_app.apps.views
-from matching_app.apps.views.search_list import SearchList  # noqa
-from matching_app.apps.views.user_list import UserList  # noqa
-from matching_app.apps.views.user_reputation import CheckLike  # noqa
-from matching_app.apps.views.search_user import SearchUser  # noqa
-from matching_app.apps.views.keyword_cloud import KeywordCloud  # noqa
-from matching_app.apps.views.user_info import UserInfo, UserCsv  # noqa
+import matching_app.apps.controllers.apis  # noqa
+from matching_app.apps.controllers.apis.search_list import SearchList  # noqa
+from matching_app.apps.controllers.apis.user_list import UserList  # noqa
+from matching_app.apps.controllers.apis.user_reputation import CheckLike  # noqa
+from matching_app.apps.controllers.apis.search_user import SearchUser  # noqa
+from matching_app.apps.controllers.apis.keyword_cloud import KeywordCloud  # noqa
+from matching_app.apps.controllers.apis.user_info import UserInfo, UserCsv  # noqa
 
 
 api.add_resource(SearchList, '/api/search_list')

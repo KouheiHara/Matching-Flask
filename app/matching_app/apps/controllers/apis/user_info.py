@@ -6,8 +6,8 @@ from matching_app.apps.services.sqlalchemy_util import convert_query_to_dict_lis
 from matching_app.apps.controllers.user import UserManager  # noqa
 from matching_app.apps.controllers.keyword import KeywordManager  # noqa
 from matching_app.apps.controllers.tweet import TweetManager  # noqa
-from matching_app.apps.views.auth import Auth  # noqa
-from matching_app.apps.views.post import Post  # noqa
+from matching_app.apps.controllers.apis.auth import Auth  # noqa
+from matching_app.apps.controllers.apis.post import Post  # noqa
 
 
 class UserInfo(Post, Auth):

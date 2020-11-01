@@ -1,5 +1,6 @@
 from matching_app import app  # noqa
 from matching_app.apps.models.db import *  # noqa
+from matching_app.apps.models.twitter import *  # noqa
 from matching_app.apps.services.morphological_analysis import *  # noqa
 
 

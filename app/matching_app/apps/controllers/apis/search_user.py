@@ -1,8 +1,8 @@
 import traceback
 from matching_app import app  # noqa
 from matching_app.apps.controllers.twitter_api import SearchUserTimelineApi  # noqa
-from matching_app.apps.views.auth import Auth  # noqa
-from matching_app.apps.views.post import Post  # noqa
+from matching_app.apps.controllers.apis.auth import Auth  # noqa
+from matching_app.apps.controllers.apis.post import Post  # noqa
 
 
 class SearchUser(Post, Auth):

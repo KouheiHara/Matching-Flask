@@ -1,8 +1,8 @@
 import traceback
 from matching_app import app  # noqa
 from matching_app.apps.controllers.user import UserManager  # noqa
-from matching_app.apps.views.auth import Auth  # noqa
-from matching_app.apps.views.post import Post  # noqa
+from matching_app.apps.controllers.apis.auth import Auth  # noqa
+from matching_app.apps.controllers.apis.post import Post  # noqa
 
 
 class CheckLike(Post, Auth):

@@ -1,11 +1,11 @@
 import traceback
 from matching_app import app  # noqa
-from matching_app.apps.controllers.twitter_api import UserSearchApi  # noqa
-from matching_app.apps.views.auth import Auth  # noqa
-from matching_app.apps.views.post import Post  # noqa
+from matching_app.apps.controllers.twitter_api import SearchTweetApi  # noqa
+from matching_app.apps.controllers.apis.auth import Auth  # noqa
+from matching_app.apps.controllers.apis.post import Post  # noqa
 
 
-class UserList(Post, Auth):
+class SearchList(Post, Auth):
     def post(self):
         try:
             self.req_init()
@@ -24,9 +24,9 @@ class UserList(Post, Auth):
             }
 
     def main(self):
-        value = self.get_value(["user_id"])
+        value = self.get_value(["keyword"])
         data = []
-        if "user_id" in value.keys():
-            twitter = UserSearchApi()
-            data = twitter.get_data(value["user_id"])
+        if "keyword" in value.keys():
+            twitter = SearchTweetApi()
+            data = twitter.get_data(value["keyword"])
         return data
