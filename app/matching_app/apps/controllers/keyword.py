@@ -5,30 +5,28 @@ from matching_app.apps.services.morphological_analysis import *  # noqa
 
 
 class KeywordManager(object):
-    @staticmethod
-    def get_tweets(user_id: str) -> list:
-        tweets = []
-        with session_scope() as session:
-            tweets = session.query(
-                Tweet.text
-            ).filter(
-                Tweet.twitter_user_id == user_id
-            ).all()
+    def __init__(self, session):
+        self.session = session
+        self._checkpoint_morphological_text = None
+
+    def get_tweets(self, user_id: str) -> list:
+        tweets = self.session.query(
+            Tweet.text
+        ).filter(
+            Tweet.twitter_user_id == user_id
+        ).all()
         return tweets
 
     def _delete_cloud_keyword(self, morphological_text_id: str) -> None:
-        with session_scope() as session:
-            session.query(
-                CloudWord
-            ).filter(
-                CloudWord.morphological_text_id == morphological_text_id
-            ).delete()
-            session.commit()
+        self.session.query(
+            CloudWord
+        ).filter(
+            CloudWord.morphological_text_id == morphological_text_id
+        ).delete()
 
-    @staticmethod
-    def get_combined_text(user_id: str) -> str:
+    def get_combined_text(self, user_id: str) -> str:
         c_t = ""
-        tweets = KeywordManager.get_tweets(user_id)
+        tweets = self.get_tweets(user_id)
         for tweet in tweets:
             c_t += tweet.text+"\n"
         return c_t
@@ -58,63 +56,59 @@ class KeywordManager(object):
             uses
         )
 
-    @staticmethod
-    def get_cloud_words(morphological_text_id: int) -> list:
-        cloud_words = None
-        with session_scope() as session:
-            cloud_words = session.query(
-                CloudWord
-            ).filter(
-                CloudWord.morphological_text_id == morphological_text_id
-            ).all()
+    def get_cloud_words(self, morphological_text_id: int) -> list:
+        cloud_words = self.session.query(
+            CloudWord
+        ).filter(
+            CloudWord.morphological_text_id == morphological_text_id
+        ).all()
         return cloud_words
 
-    def _save_morphological_test(self, user_id: str, combined_text: str, total: int = None) -> MorphologicalText:
-        morphological_text = None
-        with session_scope() as session:
-            morphological_text = session.query(
-                MorphologicalText
-            ).filter(
-                MorphologicalText.twitter_user_id == user_id
-            ).first()
-            if not total:
-                if morphological_text:
-                    morphological_text.combined_text = combined_text
-                    morphological_text.calculated = 0
-                    morphological_text.received = 0
-                    morphological_text.sum = 1
-                else:
-                    morphological_text = MorphologicalText(
-                        twitter_user_id=user_id,
-                        combined_text=combined_text,
-                        calculated=0,
-                        received=0,
-                        sum=1
-                    )
-                    session.add(morphological_text)
+    def _save_morphological_text(self, user_id: str, combined_text: str, total: int = None) -> MorphologicalText:
+        morphological_text = self.session.query(
+            MorphologicalText
+        ).filter(
+            MorphologicalText.twitter_user_id == user_id
+        ).first()
+        if not total:
+            if morphological_text:
+                self._checkpoint_morphological_text = {
+                    "user_id": user_id,
+                    "morphological_text": morphological_text
+                }
+                morphological_text.combined_text = combined_text
+                morphological_text.calculated = 0
+                morphological_text.received = 0
+                morphological_text.sum = 1
             else:
-                morphological_text.sum = total
-                morphological_text.calculated = 1
-                morphological_text.received = 1
-            session.commit()
-            session.refresh(morphological_text)
+                self._checkpoint_morphological_text = {
+                    "user_id": user_id,
+                    "morphological_text": None
+                }
+                morphological_text = MorphologicalText(
+                    twitter_user_id=user_id,
+                    combined_text=combined_text,
+                    calculated=0,
+                    received=0,
+                    sum=1
+                )
+                self.session.add(morphological_text)
+        else:
+            morphological_text.sum = total
+            morphological_text.calculated = 1
+            morphological_text.received = 1
         return morphological_text
 
-    @staticmethod
-    def get_morphological_text(user_id: str) -> MorphologicalText:
-        morphological_text = None
-        with session_scope() as session:
-            morphological_text = session.query(
-                MorphologicalText
-            ).filter(
-                MorphologicalText.twitter_user_id == user_id
-            ).first()
+    def get_morphological_text(self, user_id: str) -> MorphologicalText:
+        morphological_text = self.session.query(
+            MorphologicalText
+        ).filter(
+            MorphologicalText.twitter_user_id == user_id
+        ).first()
         return morphological_text
 
     def _save_cloud_words(self, cloudwords: list) -> None:
-        with session_scope() as session:
-            session.bulk_save_objects(cloudwords)
-            session.commit()
+        self.session.bulk_save_objects(cloudwords)
 
     def _get_combined_text_and_calc_keyword_cloud(self, user_id: str) -> tuple:
         combined_text = self.get_combined_text(user_id)
@@ -125,29 +119,64 @@ class KeywordManager(object):
             words
         )
 
-    def get_and_save_keyword_cloud(self, user_id: str) -> list:
-        combined_text, total, words = self._get_combined_text_and_calc_keyword_cloud(
-            user_id)
-        morph = self._save_morphological_test(user_id, combined_text)
-        self._delete_cloud_keyword(morph.id)
+    def get_and_save_morphological_text(self, user_id: str) -> list:
+        combined_text, total, words = \
+            self._get_combined_text_and_calc_keyword_cloud(user_id)
+        morph = self._save_morphological_text(user_id, combined_text)
+        return {
+            "total": total,
+            "words": words
+        }, {
+            "combined_text": combined_text,
+            "total": total,
+            "words": words,
+            "morphological_text": morph
+        }
+
+    def rollback_morphological_text(self):
+        if self._checkpoint_morphological_text:
+            user_id = self._checkpoint_morphological_text["user_id"]
+            if self._checkpoint_morphological_text["morphological_text"]:
+                morph = self._checkpoint_morphological_text["morphological_text"]
+                morphological_text = self.session.query(
+                    MorphologicalText
+                ).filter(
+                    MorphologicalText.twitter_user_id == user_id
+                ).first()
+                morphological_text.twitter_user_id = morph.twitter_user_id
+                morphological_text.combined_text = morph.combined_text,
+                morphological_text.calculated = morph.calculated
+                morphological_text.received = morph.received
+                morphological_text.sum = morph.sum
+                session.add(morphological_text)
+            else:
+                self.session.query(
+                    MorphologicalText
+                ).filter(
+                    MorphologicalText.twitter_user_id == user_id
+                ).delete()
+
+    def update_cloud_keyword(
+            self,
+            user_id: str,
+            combined_text: str,
+            morphological_id: int,
+            words: list,
+            total: int):
+        self._delete_cloud_keyword(morphological_id)
         save_datas = []
         for word in words:
             save_datas.append(
                 CloudWord(
-                    morphological_text_id=morph.id,
+                    morphological_text_id=morphological_id,
                     word=word["text"],
                     count=word["value"]
                 )
             )
         self._save_cloud_words(save_datas)
-        self._save_morphological_test(user_id, combined_text, total=total)
-        return {
-            "total": total,
-            "words": words
-        }
+        self._save_morphological_text(user_id, combined_text, total=total)
 
-    @staticmethod
-    def get_cloud_words_from_user_id(user_id: str) -> list:
-        morphological_text = KeywordManager.get_morphological_text(user_id)
-        cloud_words = KeywordManager.get_cloud_words(morphological_text.id)
+    def get_cloud_words_from_user_id(self, user_id: str) -> list:
+        morphological_text = self.get_morphological_text(user_id)
+        cloud_words = self.get_cloud_words(morphological_text.id)
         return cloud_words

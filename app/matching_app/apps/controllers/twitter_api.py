@@ -32,7 +32,7 @@ class TwitterApiManager(metaclass=ABCMeta):
             raise APIError("APIの接続エラー {}".format(res.text))
 
     @abstractmethod
-    def get_data(self) -> None:
+    def get_save_data(self) -> None:
         pass
 
 
@@ -57,15 +57,16 @@ class SearchTweetApi(TwitterApiManager, TwitterManager):
         self._oauth_v1()
         return super()._request(url, params)
 
-    def get_data(self, keyword: str) -> list:
+    def get_save_data(self, session, keyword: str) -> list:
         url = self.SEARCH_URL
         self.__params["q"] = keyword
         data = self._request(url, self.__params)
         ex_data = self._extract_tweets(data)
-        return self._save_and_refer_data(ex_data)
+        return self._save_and_refer_data(session, ex_data)
 
-    def _save_and_refer_data(self, datas: list) -> list:
-        users = UserManager.get_all_user()
+    def _save_and_refer_data(self, session, datas: list) -> list:
+        um = UserManager(session)
+        users = um.get_all_user()
 
         user_ids = [user.twitter_user_id for user in users]
         new_datas = []
@@ -91,7 +92,6 @@ class SearchTweetApi(TwitterApiManager, TwitterManager):
             new_datas_user_id.append(data["user_id"])
 
         if len(save_datas) > 0:
-            um = UserManager()
             um.save_users(save_datas)
 
         return new_datas
@@ -137,16 +137,17 @@ class SearchUserTimelineApi(TwitterApiManager, TwitterManager):
         self._oauth_v1()
         return super()._request(url, params)
 
-    def get_data(self, user_id: str) -> list:
+    def get_save_data(self, session, user_id: str) -> list:
         url = self.SEARCH_URL
         self.__params["screen_name"] = user_id
         data = self._request(url, self.__params)
         ex_data = self._extract_tweets(data)
-        return self._save_and_refer_data(ex_data)
+        return self._save_and_refer_data(session, ex_data)
 
-    def _save_and_refer_data(self, datas: list) -> list:
+    def _save_and_refer_data(self, session, datas: list) -> list:
         tweet_ids = [data["tweet_id"] for data in datas]
-        already_tweets = TweetManager.get_tweets(
+        tm = TweetManager(session)
+        already_tweets = tm.get_tweets(
             tweet_ids=tweet_ids)
         save_datas = []
         already_tweet_ids = [
@@ -170,7 +171,6 @@ class SearchUserTimelineApi(TwitterApiManager, TwitterManager):
                     )
                 )
         if len(save_datas) > 0:
-            tm = TweetManager()
             tm.save_tweets(save_datas)
         return datas
 
@@ -210,15 +210,16 @@ class UserSearchApi(TwitterApiManager, TwitterManager):
         self._oauth_v1()
         return super()._request(url, params)
 
-    def get_data(self, user_id: str) -> list:
+    def get_save_data(self, session, user_id: str) -> list:
         url = self.SEARCH_URL
         self.__params["q"] = user_id
         data = self._request(url, self.__params)
         ex_data = self._extract_tweets(data)
-        return self._save_and_refer_data(ex_data)
+        return self._save_and_refer_data(session, ex_data)
 
-    def _save_and_refer_data(self, datas: list) -> list:
-        users = UserManager.get_all_user()
+    def _save_and_refer_data(self, session, datas: list) -> list:
+        um = UserManager(session)
+        users = um.get_all_user()
 
         user_ids = [user.twitter_user_id for user in users]
         new_datas = []
@@ -244,7 +245,6 @@ class UserSearchApi(TwitterApiManager, TwitterManager):
             new_datas_user_id.append(data["user_id"])
 
         if len(save_datas) > 0:
-            um = UserManager()
             um.save_users(save_datas)
 
         return new_datas

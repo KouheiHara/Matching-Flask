@@ -1,5 +1,6 @@
 import traceback
 from matching_app import app  # noqa
+from matching_app.apps.models.db import *  # noqa
 from matching_app.apps.controllers.twitter_api import SearchTweetApi  # noqa
 from matching_app.apps.controllers.apis.auth import Auth  # noqa
 from matching_app.apps.controllers.apis.post import Post  # noqa
@@ -26,7 +27,15 @@ class SearchList(Post, Auth):
     def main(self):
         value = self.get_value(["keyword"])
         data = []
-        if "keyword" in value.keys():
-            twitter = SearchTweetApi()
-            data = twitter.get_data(value["keyword"])
-        return data
+        error = None
+        with session_scope() as session:
+            try:
+                twitter = SearchTweetApi()
+                data = twitter.get_save_data(session, value["keyword"])
+                session.commit()
+            except Exception as e:
+                error = e
+        if not error:
+            return data
+        else:
+            raise error

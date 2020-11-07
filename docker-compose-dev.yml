@@ -38,6 +38,7 @@ services:
           TZ: 'Asia/Tokyo'
         # ports:
         #    - 9876:9876
+        restart: always
         networks:
           - matching_network
 

@@ -4,32 +4,30 @@ from matching_app.apps.controllers.twitter import TwitterManager  # noqa
 
 
 class UserManager(object):
-    def update_reputation(self, user_id: str, like: bool, plus: bool) -> None:
-        with session_scope() as session:
-            user = session.query(
-                User
-            ).filter(
-                User.twitter_user_id == user_id
-            ).first()
-            cor = -1
-            if plus:
-                cor = 1
-            if like:
-                user.like += cor
-            else:
-                user.dislike += cor
-            session.add(user)
-            session.commit()
+    def __init__(self, session):
+        self.session = session
 
-    @staticmethod
-    def get_user_info(user_id: str) -> dict:
-        user = None
-        with session_scope() as session:
-            user = session.query(
-                User
-            ).filter(
-                User.twitter_user_id == user_id
-            ).first()
+    def update_reputation(self, user_id: str, like: bool, plus: bool) -> None:
+        user = self.session.query(
+            User
+        ).filter(
+            User.twitter_user_id == user_id
+        ).first()
+        cor = -1
+        if plus:
+            cor = 1
+        if like:
+            user.like += cor
+        else:
+            user.dislike += cor
+        self.session.add(user)
+
+    def get_user_info(self, user_id: str) -> dict:
+        user = self.session.query(
+            User
+        ).filter(
+            User.twitter_user_id == user_id
+        ).first()
         user_dict = {}
         if user:
             user_dict["user_id"] = user.twitter_user_id
@@ -41,20 +39,15 @@ class UserManager(object):
             user_dict["dislike"] = user.dislike
         return user_dict
 
-    @staticmethod
-    def get_all_user() -> list:
-        users = None
-        with session_scope() as session:
-            users = session.query(
-                User.twitter_user_id,
-                User.twitter_user_name,
-                User.like,
-                User.dislike,
-                User.icon_url
-            ).filter().all()
+    def get_all_user(self) -> list:
+        users = self.session.query(
+            User.twitter_user_id,
+            User.twitter_user_name,
+            User.like,
+            User.dislike,
+            User.icon_url
+        ).filter().all()
         return users
 
     def save_users(self, users: list) -> None:
-        with session_scope() as session:
-            session.bulk_save_objects(users)
-            session.commit()
+        self.session.bulk_save_objects(users)

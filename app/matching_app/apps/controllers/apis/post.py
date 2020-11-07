@@ -12,6 +12,11 @@ class Post(Resource):
 
     def get_value(self, keys):
         value = {}
-        for key in keys:
-            value[key] = request.form.get(key)
-        return value
+        try:
+            for key in keys:
+                value[key] = request.form[key]
+            return value
+        except Exception as e:
+            app.logger.warning(
+                "Not Found API KEY Class:{} , Key: {}".format(self.__class__.__name__, key))
+            raise Exception("Not Found Key")

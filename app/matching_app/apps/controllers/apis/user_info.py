@@ -1,6 +1,7 @@
 import traceback
 from flask import make_response
 from matching_app import app  # noqa
+from matching_app.apps.models.db import *  # noqa
 from matching_app.apps.services.create_csv import create_csv, get_rid_of_new_line  # noqa
 from matching_app.apps.services.sqlalchemy_util import convert_query_to_dict_list  # noqa
 from matching_app.apps.controllers.user import UserManager  # noqa
@@ -31,9 +32,17 @@ class UserInfo(Post, Auth):
     def main(self):
         value = self.get_value(["user_id"])
         data = {}
-        if "user_id" in value:
-            data = UserManager.get_user_info(value["user_id"])
-        return data
+        error = None
+        with session_scope() as session:
+            try:
+                um = UserManager(session)
+                data = um.get_user_info(value["user_id"])
+            except Exception as e:
+                error = e
+        if not error:
+            return data
+        else:
+            raise error
 
 
 class UserCsv(Post, Auth):
@@ -55,20 +64,27 @@ class UserCsv(Post, Auth):
         value = self.get_value(["user_id"])
         user_id = value["user_id"]
         row_datas = []
-        if user_id is not None:
-            tweets = TweetManager.get_tweets(
-                user_id=user_id
-            )
-            tweet_keys = [
-                "text",
-                "tweet_url",
-                "retweet_count",
-                "favorite_count"]
-            tweets = convert_query_to_dict_list(tweets, tweet_keys)
-            tweets = [{"text": get_rid_of_new_line(t["text"])} for t in tweets]
-            row_datas.extend(tweets)
-            data = create_csv(row_datas)
-            download_filename = user_id + '.csv'
+        error = None
+        with session_scope() as session:
+            try:
+                tm = TweetManager(session)
+                tweets = tm.get_tweets(
+                    user_id=user_id
+                )
+                tweet_keys = [
+                    "text",
+                    "tweet_url",
+                    "retweet_count",
+                    "favorite_count"]
+                tweets = convert_query_to_dict_list(tweets, tweet_keys)
+                tweets = [{"text": get_rid_of_new_line(
+                    t["text"])} for t in tweets]
+                row_datas.extend(tweets)
+                data = create_csv(row_datas)
+                download_filename = user_id + '.csv'
+            except Exception as e:
+                error = e
+        if not error:
             return self.create_csv_response(download_filename, data)
         else:
-            return None
+            raise error

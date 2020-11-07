@@ -1,5 +1,6 @@
 import traceback
 from matching_app import app  # noqa
+from matching_app.apps.models.db import *  # noqa
 from matching_app.apps.controllers.twitter_api import SearchUserTimelineApi  # noqa
 from matching_app.apps.controllers.apis.auth import Auth  # noqa
 from matching_app.apps.controllers.apis.post import Post  # noqa
@@ -26,7 +27,15 @@ class SearchUser(Post, Auth):
     def main(self):
         value = self.get_value(["user_id"])
         data = []
-        if "user_id" in value.keys():
-            twitter = SearchUserTimelineApi()
-            data = twitter.get_data(value["user_id"])
-        return data
+        error = None
+        with session_scope() as session:
+            try:
+                twitter = SearchUserTimelineApi()
+                data = twitter.get_save_data(session, value["user_id"])
+                session.commit()
+            except Exception as e:
+                error = e
+        if not error:
+            return data
+        else:
+            raise error
